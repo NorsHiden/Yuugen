@@ -1,0 +1,540 @@
+.music-controller-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 4.5rem);
+}
+
+.music-controller {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  width: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #001a23;
+    border-radius: 10px;
+  }
+}
+
+/*  Music Controller Layout */
+
+.music-controller-horizontal-split {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+}
+
+.music-controller-vertical-split {
+  display: flex;
+  flex-direction: row;
+  min-height: 20rem;
+  width: 100%;
+}
+
+/* Music Controller Playing Now */
+
+.music-playing-now {
+  display: flex;
+  flex-direction: column;
+  height: 18rem;
+  min-width: 37rem;
+  background: url(https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAmL4KAKSy3U-6BwpDEvTmSZoFrVwops1WJK5ECjkzbrhuLQnC_UZTteRjVX_PBkTiFYucBY-7kFXq_qbCy4dxgBkP9IQUrWnfR4ztd6a0i6vj35U19NCWOJ39K4ay-1zCuXPblalnMWWSpBJamEzzbCCRoa3Gb2eQcXks7858aopJn2GYGji-7hjvug/s600-rw/lofi-anime-girl-studying-1282023.png);
+  border-radius: 1rem;
+  margin: 1rem;
+}
+
+.music-playing-now-grad {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 11, 15, 1) 10%,
+    rgba(0, 117, 154, 0) 100%
+  );
+  height: 100%;
+  width: 100%;
+  border-radius: 0.8rem;
+  font-family: "inter", sans-serif;
+  color: #fff;
+}
+
+.music-header {
+  margin-top: 1rem;
+  font-size: 32px;
+  font-weight: 900;
+  color: white;
+}
+
+.music-playing-now-author {
+  margin-top: 2rem;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+.music-playing-now-title {
+  font-size: 24px;
+  font-weight: 700;
+  width: 90%;
+  height: 9rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/*  Channels */
+
+.music-channels {
+  display: flex;
+  flex-direction: column;
+  height: 18rem;
+  width: 100%;
+  font-family: "inter", sans-serif;
+  color: #fff;
+  margin: 1rem;
+}
+
+.music-channel-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding-top: 1rem;
+  font-family: "inter", sans-serif;
+  overflow-y: hidden;
+  &:hover {
+    overflow-y: auto;
+  }
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #001a23;
+    border-radius: 10px;
+  }
+}
+
+.music-channel-item {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  border-radius: 0.5rem;
+  padding-left: 1rem;
+  cursor: pointer;
+  color: #001a23;
+}
+
+.music-channel-item:hover {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 26, 35, 1) 0%,
+    rgba(0, 26, 35, 1) 0%,
+    rgba(0, 11, 15, 0) 100%
+  );
+}
+
+.music-channel-item-name {
+  margin-left: 1rem;
+}
+
+.music-channel-item:hover {
+  color: #fff;
+}
+
+/* Music Search */
+
+.music-search {
+  display: flex;
+  flex-direction: column;
+  min-width: 30rem;
+  height: calc(100% - 6rem);
+  padding-top: 1rem;
+  font-family: "inter", sans-serif;
+  color: #a4a4a4;
+}
+
+.music-search-input {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: calc(100% - 3.5rem);
+  min-height: 3rem;
+  border-style: solid;
+  border-color: #001a23;
+  color: #a4a4a4;
+  border-radius: 20px;
+  padding: 0 1rem;
+  margin-top: 0.5rem;
+  transition: 0.2s;
+  &:focus-within {
+    border-color: #003344;
+  }
+}
+
+.music-search-bar {
+  width: 100%;
+  &::placeholder {
+    color: #001a23;
+  }
+}
+
+.music-search-bar:focus + .music-search-bar-icon {
+  color: #003344;
+  scale: 1.2;
+}
+
+.music-search-bar:focus .music-search-bar::placeholder {
+  color: #003344;
+}
+
+.music-search-bar-icon {
+  color: #001a23;
+  transition: 0.2s;
+}
+
+.music-search-results {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.music-search-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 5rem;
+  border-radius: 20px;
+  padding: 0 1rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  &:hover {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 26, 35, 1) 0%,
+      rgba(0, 26, 35, 1) 0%,
+      rgba(0, 11, 15, 0) 100%
+    );
+    color: white;
+  }
+  &:hover .music-search-item-icon {
+    display: block;
+  }
+}
+
+.music-search-item-pic {
+  min-height: 4rem;
+  min-width: 4rem;
+  border-radius: 15px;
+  background-color: #003344;
+}
+
+.music-search-item-title {
+  margin-left: 0.5rem;
+  font-size: 16px;
+  font-weight: 700;
+  max-width: 20rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.music-search-item-artist {
+  margin-left: 0.5rem;
+  font-size: 14px;
+  font-weight: 300;
+  max-width: 20rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.music-search-item-icon {
+  display: none;
+  min-width: 2rem;
+  min-height: 2rem;
+  margin-left: auto;
+  margin-right: 1rem;
+  color: #003344;
+}
+
+/* Queue */
+
+.music-queue {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  font-family: "inter", sans-serif;
+  color: #a4a4a4;
+}
+
+.music-queue-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  padding-top: 2rem;
+  font-family: "inter", sans-serif;
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: #001a23;
+    border-radius: 10px;
+  }
+}
+
+.music-queue-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 5rem;
+  border-radius: 15px;
+  padding-left: 0.5rem;
+  cursor: pointer;
+  font-family: inter, sans-serif;
+  &:hover {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 26, 35, 1) 0%,
+      rgba(0, 26, 35, 1) 0%,
+      rgba(0, 11, 15, 0) 100%
+    );
+  }
+}
+
+.music-queue-item-num {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  font-weight: 900;
+  min-width: 4rem;
+}
+
+.music-queue-item-pic {
+  min-height: 4rem;
+  min-width: 4rem;
+  border-radius: 15px;
+  background-color: #a4a4a4;
+}
+
+.music-queue-item-title {
+  margin-left: 1rem;
+  font-size: 16px;
+  font-weight: 700;
+  width: 20rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.music-queue-item-artist {
+  margin-left: 1rem;
+  font-size: 14px;
+  font-weight: 300;
+  max-width: 20rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.music-queue-item-duration {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 1rem;
+  font-size: 14px;
+  font-weight: 300;
+}
+
+.music-queue-item-duration-time {
+  font-size: 16px;
+}
+
+.music-queue-item-duration-icon {
+  margin-right: 0.5rem;
+}
+
+.music-queue-item-source {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 5rem;
+}
+
+.music-queue-item-requester {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 5rem;
+}
+
+.music-queue-item-requester-name {
+  margin-left: 0.5rem;
+  font-size: 14px;
+  font-weight: 300;
+  max-width: 20rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.music-queue-item-remove {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: auto;
+}
+
+.music-queue-item-drag {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 2rem;
+  margin-right: 1rem;
+}
+
+/*  Music Player  */
+
+.music-player {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  position: absolute;
+  bottom: 2rem;
+  height: 6rem;
+  right: 2rem;
+  width: calc(100% - 8rem);
+  background-color: #001a23;
+  border-radius: 1rem;
+  color: #d4a88b;
+  font-family: "inter", sans-serif;
+}
+
+.music-player-song-pic {
+  border-radius: 1rem;
+  height: 5rem;
+  width: 5rem;
+  margin-left: 0.5rem;
+  background: url(https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAmL4KAKSy3U-6BwpDEvTmSZoFrVwops1WJK5ECjkzbrhuLQnC_UZTteRjVX_PBkTiFYucBY-7kFXq_qbCy4dxgBkP9IQUrWnfR4ztd6a0i6vj35U19NCWOJ39K4ay-1zCuXPblalnMWWSpBJamEzzbCCRoa3Gb2eQcXks7858aopJn2GYGji-7hjvug/s600-rw/lofi-anime-girl-studying-1282023.png);
+  background-position: 50%;
+  background-size: cover;
+}
+
+.music-player-song-title {
+  font-size: 20px;
+  font-weight: 900;
+  width: 20rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-left: 1rem;
+}
+
+.music-player-song-artist {
+  font-size: 16px;
+  max-width: 20rem;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-left: 1rem;
+}
+
+.music-player-controls {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.music-player-controls-icon {
+  margin-right: 1rem;
+  font-size: 32px;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+  }
+}
+
+.music-player-song-range-bar {
+  margin-right: 1rem;
+  width: 30rem;
+  &::-webkit-slider-runnable-track {
+    background: #002330;
+    height: 0.5rem;
+    border-radius: 1rem;
+  }
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    margin-top: 1.5rem;
+    height: 1rem;
+    width: 1rem;
+    border-radius: 1rem;
+    background: #d4a88b;
+    margin-top: -0.25rem;
+    cursor: pointer;
+  }
+}
+
+.music-player-song-time {
+  margin-right: 1rem;
+}
+
+.music-player-song-volume {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-right: 1rem;
+}
+
+.music-player-song-volume-icon {
+  margin-left: 4rem;
+  margin-right: 0.5rem;
+  font-size: 24px;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+  }
+}
+
+.music-player-song-volume-bar {
+  margin-right: 1rem;
+  width: 10rem;
+  &::-webkit-slider-runnable-track {
+    background: #002330;
+    height: 0.5rem;
+    border-radius: 1rem;
+  }
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    margin-top: 1.5rem;
+    height: 1rem;
+    width: 1rem;
+    border-radius: 1rem;
+    background: #d4a88b;
+    margin-top: -0.25rem;
+    cursor: pointer;
+  }
+}
+
+.music-player-song-shuffle {
+  margin-right: 1rem;
+  margin-left: auto;
+  font-size: 32px;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+  }
+}
+
+.music-player-song-loop {
+  margin-right: 3rem;
+  font-size: 32px;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+  }
+}
