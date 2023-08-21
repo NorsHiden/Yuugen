@@ -78,9 +78,9 @@ export class VoiceService {
     const connection = this.guildConnectionService.get(guildId);
     if (!connection) throw new NotFoundException('Connection not found');
     connection.queue.splice(index, 1);
-    if (index < connection.currentIndex && connection.currentIndex > 0)
+    if (index === connection.currentIndex) connection.player.stop();
+    else if (index < connection.currentIndex && connection.currentIndex > 0)
       connection.currentIndex--;
-    else if (index === connection.currentIndex) connection.player.stop();
     this.guildConnectionService.set(guildId, connection);
     return { message: 'Removed song from queue', statusCode: 200 };
   }
