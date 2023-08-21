@@ -1,6 +1,5 @@
 import { BiVolumeFull } from "react-icons/bi";
 import { Channel, Guild } from "../interfaces";
-import { useEffect, useState } from "react";
 import axios from "axios";
 import { BsFillTelephoneXFill } from "react-icons/bs";
 
