@@ -5,7 +5,7 @@ import {
   BiSkipPrevious,
   BiSolidVolumeFull,
 } from "react-icons/bi";
-import { BsFillPlayCircleFill, BsPauseCircleFill } from "react-icons/bs";
+import { BsFillPlayCircleFill } from "react-icons/bs";
 import { FaPauseCircle } from "react-icons/fa";
 import { Guild, Song } from "../interfaces";
 import axios from "axios";
