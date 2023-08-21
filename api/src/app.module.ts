@@ -7,6 +7,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { UserModule } from './user/user.module';
+import { GuildModule } from './guild/guild.module';
+import { VoiceModule } from './voice/voice.module';
 const configService = new ConfigService();
 
 @Module({
@@ -31,6 +33,8 @@ const configService = new ConfigService();
     }),
     OauthModule,
     UserModule,
+    GuildModule,
+    VoiceModule,
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', '../view/dist'),
     }),

@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import axios from 'axios';
 import { Client } from 'discord.js';
+import { UserMe } from 'src/interfaces';
 import { User } from 'src/typeorm/User';
 import { Repository } from 'typeorm';
 
@@ -35,7 +36,7 @@ export class UserService {
     return user;
   }
 
-  async getMe(id: string): Promise<User> {
+  async getMe(id: string): Promise<UserMe> {
     const userDb = await this.userRepository.findOneBy({ id: id });
 
     if (!userDb) throw new NotFoundException('User not found');

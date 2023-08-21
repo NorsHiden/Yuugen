@@ -1,37 +1,19 @@
 import { BiChevronDown } from "react-icons/bi";
 import { TbNotification } from "react-icons/tb";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import axios from "axios";
 import "./m-styles.css";
-
-interface Guild {
-  id: string;
-  name: string;
-  icon: string;
-  owner: boolean;
-  permissions: number;
-  features: string[];
-  permissions_new: string;
-}
+import { Guild } from "../interfaces";
 
 interface GuildItemProps {
   guild: Guild;
-  setSelectedGuild: (guild: Guild) => void;
-  setTabIndex: (index: number) => void;
 }
 
-const GuildItem = ({
-  guild,
-  setSelectedGuild,
-  setTabIndex,
-}: GuildItemProps) => {
+const GuildItem = ({ guild }: GuildItemProps) => {
   return (
     <div
       className="guild-list-item"
-      onClick={() => {
-        setSelectedGuild(guild);
-        setTabIndex(-1);
-      }}
+      onClick={() => window.location.replace(`/${guild.id}/voice`)}
     >
       <img
         className="selected-guild-pic"
@@ -42,28 +24,44 @@ const GuildItem = ({
   );
 };
 
-export const Menu = () => {
-  const [guilds, setGuilds] = useState<Guild[]>([]);
-  const [selectedGuild, setSelectedGuild] = useState<Guild | null>(null);
-  const [tabIndex, setTabIndex] = useState<number>(0);
+interface MenuProps {
+  guildsState: {
+    guilds: Guild[];
+    setGuilds: (guilds: Guild[]) => void;
+  };
+  currentGuildState: {
+    currentGuild: Guild | null;
+    setCurrentGuild: (guild: Guild) => void;
+  };
+}
 
+export const Menu = ({ guildsState, currentGuildState }: MenuProps) => {
   useEffect(() => {
     axios.get("/api/user/guilds").then((res) => {
-      setGuilds(res.data);
+      const currentGuildId = window.location.pathname.split("/")[1];
+      if (!currentGuildId) return window.location.replace("/selectGuild");
+      const currentGuild = res.data.find(
+        (guild: Guild) => guild.id === currentGuildId
+      );
+      if (!currentGuild) return window.location.replace("/selectGuild");
+      currentGuildState.setCurrentGuild(currentGuild);
+      guildsState.setGuilds(res.data);
     });
   }, []);
 
   return (
     <div className="menu">
-      <div className="select-guild" tabIndex={tabIndex}>
+      <div className="select-guild" tabIndex={0}>
         <div className="selected-guild">
-          {selectedGuild ? (
+          {currentGuildState.currentGuild ? (
             <>
               <img
                 className="selected-guild-pic"
-                src={`https://cdn.discordapp.com/icons/${selectedGuild.id}/${selectedGuild.icon}.png`}
+                src={`https://cdn.discordapp.com/icons/${currentGuildState.currentGuild.id}/${currentGuildState.currentGuild.icon}.png`}
               />
-              <div className="selected-guild-title">{selectedGuild.name}</div>
+              <div className="selected-guild-title">
+                {currentGuildState.currentGuild.name}
+              </div>
             </>
           ) : (
             <>
@@ -74,13 +72,8 @@ export const Menu = () => {
           <BiChevronDown size="16" className="selected-guild-icon" />
         </div>
         <div className="guild-list">
-          {guilds.map((guild) => (
-            <GuildItem
-              key={guild.id}
-              guild={guild}
-              setSelectedGuild={setSelectedGuild}
-              setTabIndex={setTabIndex}
-            />
+          {guildsState.guilds.map((guild) => (
+            <GuildItem key={guild.id} guild={guild} />
           ))}
         </div>
       </div>

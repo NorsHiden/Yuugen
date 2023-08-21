@@ -43,7 +43,7 @@
   flex-direction: column;
   height: 18rem;
   min-width: 37rem;
-  background: url(https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAmL4KAKSy3U-6BwpDEvTmSZoFrVwops1WJK5ECjkzbrhuLQnC_UZTteRjVX_PBkTiFYucBY-7kFXq_qbCy4dxgBkP9IQUrWnfR4ztd6a0i6vj35U19NCWOJ39K4ay-1zCuXPblalnMWWSpBJamEzzbCCRoa3Gb2eQcXks7858aopJn2GYGji-7hjvug/s600-rw/lofi-anime-girl-studying-1282023.png);
+  background-size: cover;
   border-radius: 1rem;
   margin: 1rem;
 }
@@ -63,6 +63,7 @@
 
 .music-header {
   margin-top: 1rem;
+  width: 100%;
   font-size: 32px;
   font-weight: 900;
   color: white;
@@ -122,24 +123,65 @@
   border-radius: 0.5rem;
   padding-left: 1rem;
   cursor: pointer;
-  color: #001a23;
+  color: #a4a4a4;
+  &:hover {
+    background: linear-gradient(
+      90deg,
+      rgba(0, 26, 35, 1) 0%,
+      rgba(0, 26, 35, 1) 0%,
+      rgba(0, 11, 15, 0) 100%
+    );
+    color: #fff;
+  }
 }
 
-.music-channel-item:hover {
-  background: linear-gradient(
-    90deg,
-    rgba(0, 26, 35, 1) 0%,
-    rgba(0, 26, 35, 1) 0%,
-    rgba(0, 11, 15, 0) 100%
-  );
+.music-channel-item-active {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 3rem;
+  border-radius: 0.5rem;
+  padding-left: 1rem;
+  cursor: pointer;
+  background: #003344;
+  border-radius: 0.5rem;
+  color: #d4a88b;
+}
+
+.music-channel-item-disconnect-btn {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-height: 3rem;
+  border-radius: 0.5rem;
+  padding-left: 1rem;
+  margin-left: auto;
+  margin-right: 1rem;
+  cursor: pointer;
+  color: #d4a88b;
+  &:hover {
+    color: #fff;
+  }
 }
 
 .music-channel-item-name {
   margin-left: 1rem;
 }
 
-.music-channel-item:hover {
-  color: #fff;
+.music-channel-skeleton {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  border-radius: 0.5rem;
+  padding-left: 1rem;
+  cursor: pointer;
+  color: #a4a4a4;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 26, 35, 1) 0%,
+    rgba(0, 26, 35, 1) 0%,
+    rgba(0, 11, 15, 0) 100%
+  );
 }
 
 /* Music Search */
@@ -224,8 +266,9 @@
 }
 
 .music-search-item-pic {
-  min-height: 4rem;
-  min-width: 4rem;
+  height: 4rem;
+  width: 4rem;
+  object-fit: cover;
   border-radius: 15px;
   background-color: #003344;
 }
@@ -264,7 +307,7 @@
 .music-queue {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  align-items: center;
   width: 100%;
   font-family: "inter", sans-serif;
   color: #a4a4a4;
@@ -273,8 +316,8 @@
 .music-queue-list {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  width: 100%;
+  align-items: center;
+  width: 95%;
   padding-top: 2rem;
   font-family: "inter", sans-serif;
   &::-webkit-scrollbar {
@@ -291,10 +334,12 @@
   flex-direction: row;
   align-items: center;
   min-height: 5rem;
+  width: 100%;
   border-radius: 15px;
   padding-left: 0.5rem;
-  cursor: pointer;
   font-family: inter, sans-serif;
+  transition: 0.2s;
+  opacity: 80%;
   &:hover {
     background: linear-gradient(
       90deg,
@@ -302,7 +347,23 @@
       rgba(0, 26, 35, 1) 0%,
       rgba(0, 11, 15, 0) 100%
     );
+    scale: 101%;
+    opacity: 100%;
   }
+}
+
+.music-queue-item-selected {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+  min-height: 5rem;
+  scale: 101%;
+  border-radius: 15px;
+  padding-left: 0.5rem;
+  font-family: inter, sans-serif;
+  background-color: #003344;
+  color: #d4a88b;
 }
 
 .music-queue-item-num {
@@ -311,12 +372,23 @@
   justify-content: center;
   font-size: 24px;
   font-weight: 900;
-  min-width: 4rem;
+  width: 3rem;
+  height: 3rem;
+  margin: 0 1rem;
+  border-radius: 1rem;
+  transition: 0.3s;
+  cursor: pointer;
+  &:hover {
+    background-color: #002330;
+    color: #d4a88b;
+    border-radius: 100%;
+  }
 }
 
 .music-queue-item-pic {
-  min-height: 4rem;
-  min-width: 4rem;
+  height: 4rem;
+  width: 4rem;
+  object-fit: cover;
   border-radius: 15px;
   background-color: #a4a4a4;
 }
@@ -352,6 +424,7 @@
 
 .music-queue-item-duration-time {
   font-size: 16px;
+  width: 5rem;
 }
 
 .music-queue-item-duration-icon {
@@ -387,6 +460,10 @@
   flex-direction: row;
   align-items: center;
   margin-left: auto;
+  cursor: pointer;
+  &:hover {
+    color: #fff;
+  }
 }
 
 .music-queue-item-drag {
@@ -395,16 +472,28 @@
   align-items: center;
   margin-left: 2rem;
   margin-right: 1rem;
+  cursor: grab;
+  &:hover {
+    color: #fff;
+  }
+  &:active {
+    cursor: grabbing;
+  }
 }
 
 /*  Music Player  */
+
+.musicplayer-placeholder {
+  width: 100%;
+  min-height: 9rem;
+}
 
 .music-player {
   display: flex;
   flex-direction: row;
   align-items: center;
   position: absolute;
-  bottom: 2rem;
+  z-index: 1;
   height: 6rem;
   right: 2rem;
   width: calc(100% - 8rem);
@@ -412,6 +501,7 @@
   border-radius: 1rem;
   color: #d4a88b;
   font-family: "inter", sans-serif;
+  transition: 0.2s;
 }
 
 .music-player-song-pic {
@@ -419,7 +509,6 @@
   height: 5rem;
   width: 5rem;
   margin-left: 0.5rem;
-  background: url(https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjAmL4KAKSy3U-6BwpDEvTmSZoFrVwops1WJK5ECjkzbrhuLQnC_UZTteRjVX_PBkTiFYucBY-7kFXq_qbCy4dxgBkP9IQUrWnfR4ztd6a0i6vj35U19NCWOJ39K4ay-1zCuXPblalnMWWSpBJamEzzbCCRoa3Gb2eQcXks7858aopJn2GYGji-7hjvug/s600-rw/lofi-anime-girl-studying-1282023.png);
   background-position: 50%;
   background-size: cover;
 }

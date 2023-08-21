@@ -90,6 +90,7 @@
   border-radius: 10px;
   min-height: 2rem;
   cursor: pointer;
+  color: #d3a78a;
   &:hover {
     background: linear-gradient(
       90deg,

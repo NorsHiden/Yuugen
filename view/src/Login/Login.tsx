@@ -19,10 +19,10 @@ export const LoginPage = () => {
               <span style={{ color: "#D4A88B" }}>Control</span> Your Discord
               Server With <span style={{ color: "#D4A88B" }}>Ease</span>.
             </h1>
-            <div className="login-button">
+            <a className="login-button" href="/api/oauth">
               <BiLogoDiscordAlt />
               Continue with Discord
-            </div>
+            </a>
           </div>
         </div>
       </div>
