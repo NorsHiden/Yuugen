@@ -23,13 +23,12 @@ export const NavBar = () => {
           <div className="navbar-item-hover">Dashboard</div>
         </div>
         <div className="navbar-item">
-          {/* <GradientIcon
+          <GradientIcon
             Icon={BiSolidMusic}
             startColor="#D3A78A"
             endColor="#007296"
             size="2rem"
-          /> */}
-          <BiSolidMusic size="35" />
+          />
           <div className="navbar-item-hover">Music</div>
         </div>
       </div>
@@ -38,10 +37,10 @@ export const NavBar = () => {
           <BiUser size="35" />
           <div className="navbar-item-hover">Account</div>
         </div>
-        <div className="navbar-item">
+        <a className="navbar-item" href="/api/oauth/logout">
           <BiLogOutCircle size="35" />
           <div className="navbar-item-hover">Logout</div>
-        </div>
+        </a>
       </div>
     </div>
   );

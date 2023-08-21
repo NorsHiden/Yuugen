@@ -28,7 +28,7 @@ export class OauthController {
   }
 
   @Get('logout')
-  async oauthLogout(@Req() req, @Res() res) {
+  async oauthLogout(@Res() res) {
     res.clearCookie('access_token');
     res.redirect(this.configService.get('CLIENT_URL'));
   }

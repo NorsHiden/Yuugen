@@ -44,19 +44,34 @@ const QueueItem = ({
 
   const PlaySongHover = () => {
     if (index === currentIndex) {
-      return (
-        <>
-          {hovered ? (
-            currentState == "playing" ? (
+      if (hovered)
+        return (
+          <>
+            {currentState == "playing" ? (
               <BsFillPauseFill size="32" />
             ) : (
               <BsFillPlayFill size="32" />
-            )
-          ) : (
+            )}
+          </>
+        );
+      else if (currentState == "playing")
+        return (
+          <>
             <PiWaveformBold size="24" />
-          )}
-        </>
-      );
+          </>
+        );
+      else if (currentState == "paused")
+        return (
+          <>
+            <BsFillPlayFill size="32" />
+          </>
+        );
+      else
+        return (
+          <>
+            <PiWaveformBold size="24" />
+          </>
+        );
     } else {
       return <>{hovered ? <BsFillPlayFill size="32" /> : index + 1}</>;
     }

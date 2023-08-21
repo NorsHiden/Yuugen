@@ -1,6 +1,6 @@
 import { BiChevronDown } from "react-icons/bi";
 import { TbNotification } from "react-icons/tb";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import "./m-styles.css";
 import { Guild } from "../interfaces";
@@ -36,16 +36,27 @@ interface MenuProps {
 }
 
 export const Menu = ({ guildsState, currentGuildState }: MenuProps) => {
+  const [user, setUser] = useState<any>({});
   useEffect(() => {
-    axios.get("/api/user/guilds").then((res) => {
-      const currentGuildId = window.location.pathname.split("/")[1];
-      if (!currentGuildId) return window.location.replace("/selectGuild");
-      const currentGuild = res.data.find(
-        (guild: Guild) => guild.id === currentGuildId
-      );
-      if (!currentGuild) return window.location.replace("/selectGuild");
-      currentGuildState.setCurrentGuild(currentGuild);
-      guildsState.setGuilds(res.data);
+    axios
+      .get("/api/user/guilds")
+      .then((res) => {
+        const currentGuildId = window.location.pathname.split("/")[1];
+        if (!currentGuildId) return window.location.replace("/selectGuild");
+        const currentGuild = res.data.find(
+          (guild: Guild) => guild.id === currentGuildId
+        );
+        if (!currentGuild) return window.location.replace("/selectGuild");
+        currentGuildState.setCurrentGuild(currentGuild);
+        guildsState.setGuilds(res.data);
+      })
+      .catch((err) => {
+        if (err.response.status == 401) window.location.href = "/login";
+        else console.log(err);
+      });
+
+    axios.get("/api/user/me").then((res) => {
+      setUser(res.data);
     });
   }, []);
 
@@ -80,7 +91,10 @@ export const Menu = ({ guildsState, currentGuildState }: MenuProps) => {
       <div className="menu-profile">
         <TbNotification size="32" className="menu-notification" />
         <div className="menu-profile-highlight">
-          <div className="menu-profile-pic"></div>
+          <img
+            className="menu-profile-pic"
+            src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`}
+          />
         </div>
       </div>
     </div>

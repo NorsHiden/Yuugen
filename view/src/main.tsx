@@ -3,10 +3,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { LoginPage } from "./Login/Login";
 import { App } from "./App";
 import "./index.css";
-
-const SelectGuild = () => {
-  return <div>Select Guild</div>;
-};
+import { SelectGuild } from "./SelectGuild/SelectGuild";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <>
