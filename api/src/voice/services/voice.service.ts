@@ -78,7 +78,6 @@ export class VoiceService {
     const connection = this.guildConnectionService.get(guildId);
     if (!connection) throw new NotFoundException('Connection not found');
     if (index == connection.currentIndex) {
-      console.log('what the fuck wach makadkholch hna ?');
       connection.player.pause();
       connection.state = 'idle';
       connection.currentIndex = -1;
