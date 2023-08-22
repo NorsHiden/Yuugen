@@ -123,6 +123,7 @@ export class PlayerService {
     if (!connection) throw new NotFoundException('Connection not found');
     connection.player.stop();
     connection.state = 'idle';
+    connection.currentIndex = -1;
     this.guildConnectionService.set(guildId, connection);
     return { message: 'Stopped song', statusCode: 200 };
   }

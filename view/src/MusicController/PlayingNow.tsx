@@ -14,23 +14,23 @@ export const PlayingNow = ({ queue, currentIndex }: PlayingNowProps) => {
       className="music-playing-now"
       style={{
         backgroundImage: `url(${
-          queue.length > 0 ? queue[currentIndex].thumbnail : defaultImg
+          currentIndex > -1 ? queue[currentIndex].thumbnail : defaultImg
         })`,
       }}
     >
       <div className="music-playing-now-grad">
         <div className="music-header">
-          {queue.length > 0 ? "Playing Now" : "Nothing is Playing"}
+          {currentIndex > -1 ? "Playing Now" : "Nothing is Playing"}
         </div>
         <div className="music-playing-now-author">
-          {queue.length > 0 ? queue[currentIndex].author : ""}
+          {currentIndex > -1 ? queue[currentIndex].author : ""}
         </div>
         <div className="music-playing-now-title">
-          {queue.length > 0 ? queue[currentIndex].title : ""}
+          {currentIndex > -1 ? queue[currentIndex].title : ""}
         </div>
         <div className="music-playing-now-requestedby">
           {" "}
-          {queue.length > 0
+          {currentIndex > -1
             ? `Requested By ${queue[currentIndex].requester_name}`
             : ""}
         </div>

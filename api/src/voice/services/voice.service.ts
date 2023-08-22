@@ -77,10 +77,14 @@ export class VoiceService {
     if (!guild) throw new NotFoundException('Guild not found');
     const connection = this.guildConnectionService.get(guildId);
     if (!connection) throw new NotFoundException('Connection not found');
-    connection.queue.splice(index, 1);
-    if (index === connection.currentIndex) connection.player.stop();
-    else if (index < connection.currentIndex && connection.currentIndex > 0)
+    if (index == connection.currentIndex) {
+      console.log('what the fuck wach makadkholch hna ?');
+      connection.player.pause();
+      connection.state = 'idle';
+      connection.currentIndex = -1;
+    } else if (index < connection.currentIndex && connection.currentIndex > 0)
       connection.currentIndex--;
+    connection.queue.splice(index, 1);
     this.guildConnectionService.set(guildId, connection);
     return { message: 'Removed song from queue', statusCode: 200 };
   }

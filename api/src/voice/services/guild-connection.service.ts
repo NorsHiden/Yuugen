@@ -26,7 +26,7 @@ const defaultGuildConnection = (): GuildConnection => ({
   queue: [],
   volume: 100,
   state: 'idle',
-  currentIndex: 0,
+  currentIndex: -1,
   isLooping: false,
 });
 

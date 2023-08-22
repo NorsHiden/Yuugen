@@ -87,6 +87,11 @@ export class VoiceController {
     return this.playerService.previous(guildId);
   }
 
+  @Post('stop')
+  async stop(@Query('guildId') guildId: string) {
+    return this.playerService.stop(guildId);
+  }
+
   @Post('loop')
   async loop(@Query('guildId') guildId: string) {
     return this.playerService.loop(guildId);

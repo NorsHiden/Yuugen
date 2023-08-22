@@ -1,10 +1,10 @@
 import { BiLogoYoutube, BiTime, BiTrash, BiUserCircle } from "react-icons/bi";
+import { BsFillPlayCircleFill, BsFillStopCircleFill } from "react-icons/bs";
 import { PiWaveformBold } from "react-icons/pi";
 import { MdDragHandle } from "react-icons/md";
 import { Guild, Song } from "../interfaces";
 import axios from "axios";
 import { useState } from "react";
-import { BsFillPauseFill, BsFillPlayFill } from "react-icons/bs";
 
 interface QueueItemProps {
   currentGuild: Guild | null;
@@ -29,7 +29,7 @@ const QueueItem = ({
   const selectSong = () => {
     if (index === currentIndex) {
       if (currentState == "playing")
-        axios.post(`/api/voice/pause?guildId=${currentGuild?.id}`);
+        axios.post(`/api/voice/stop?guildId=${currentGuild?.id}`);
       else if (currentState == "paused")
         axios.post(`/api/voice/play?guildId=${currentGuild?.id}`);
       else
@@ -48,9 +48,9 @@ const QueueItem = ({
         return (
           <>
             {currentState == "playing" ? (
-              <BsFillPauseFill size="32" />
+              <BsFillStopCircleFill size="32" />
             ) : (
-              <BsFillPlayFill size="32" />
+              <BsFillPlayCircleFill size="32" />
             )}
           </>
         );
@@ -63,7 +63,7 @@ const QueueItem = ({
       else if (currentState == "paused")
         return (
           <>
-            <BsFillPlayFill size="32" />
+            <BsFillPlayCircleFill size="32" />
           </>
         );
       else
@@ -73,7 +73,7 @@ const QueueItem = ({
           </>
         );
     } else {
-      return <>{hovered ? <BsFillPlayFill size="32" /> : index + 1}</>;
+      return <>{hovered ? <BsFillPlayCircleFill size="32" /> : index + 1}</>;
     }
   };
 

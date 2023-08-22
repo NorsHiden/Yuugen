@@ -24,7 +24,7 @@ export const MusicPlayer = ({
   currentState,
 }: MusicPlayerProps) => {
   const hideOrDisplay = () => {
-    if (queue.length > 0)
+    if (currentIndex > -1)
       return {
         bottom: "2rem",
         opacity: "100%",
@@ -49,16 +49,16 @@ export const MusicPlayer = ({
         className="music-player-song-pic"
         style={{
           backgroundImage: `url(${
-            queue.length > 0 ? queue[currentIndex].thumbnail : ""
+            currentIndex > -1 ? queue[currentIndex].thumbnail : ""
           })`,
         }}
       />
       <div>
         <div className="music-player-song-title">
-          {queue.length > 0 ? queue[currentIndex].title : "Nothing is Playing"}
+          {currentIndex > -1 ? queue[currentIndex].title : "Nothing is Playing"}
         </div>
         <div className="music-player-song-artist">
-          {queue.length > 0 ? queue[currentIndex].author : ""}
+          {currentIndex > -1 ? queue[currentIndex].author : ""}
         </div>
       </div>
       <div className="music-player-controls">
@@ -80,7 +80,7 @@ export const MusicPlayer = ({
       </div>
       <input type="range" className="music-player-song-range-bar" />
       <div className="music-player-song-time">
-        {queue.length > 0 ? queue[currentIndex].raw_duration : ""}
+        {currentIndex > -1 ? queue[currentIndex].raw_duration : ""}
       </div>
       <div className="music-player-song-volume">
         <BiSolidVolumeFull className="music-player-song-volume-icon" />

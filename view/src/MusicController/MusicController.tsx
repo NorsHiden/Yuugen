@@ -17,7 +17,7 @@ export const MusicController = ({ currentGuild }: MusicControllerProps) => {
     {} as Channel
   );
   const [queue, setQueue] = useState<Song[]>([]);
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [currentIndex, setCurrentIndex] = useState<number>(-1);
   const [currentState, setCurrentState] = useState<
     "playing" | "paused" | "idle"
   >("idle");
