@@ -1,5 +1,4 @@
 import {
-  BiRepeat,
   BiShuffle,
   BiSkipNext,
   BiSkipPrevious,
