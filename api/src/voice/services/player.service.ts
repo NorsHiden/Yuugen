@@ -63,16 +63,49 @@ export class PlayerService {
     const stream = await player.stream(
       connection.queue[connection.currentIndex].url,
       {
-        discordPlayerCompatibility: true,
         quality: 3,
       },
     );
+    connection.seek = 0;
     const resource = createAudioResource(stream.stream, {
       inputType: stream.type,
       inlineVolume: true,
     });
     connection.player.play(resource);
     connection.stream = resource;
+    resource.volume.setVolume(connection.volume / 100);
+    connection.state = 'playing';
+    this.guildConnectionService.set(guildId, connection);
+    return { message: 'Playing song', statusCode: 200 };
+  }
+
+  async playAt(guildId: string, time: number) {
+    if (time < 0)
+      throw new BadRequestException('Time must be greater than 0 seconds');
+    const guild = this.client.guilds.cache.get(guildId);
+    if (!guild) throw new NotFoundException('Guild not found');
+    const connection = this.guildConnectionService.get(guildId);
+    if (!connection) throw new NotFoundException('Connection not found');
+    if (connection.state === 'paused') {
+      connection.player.unpause();
+      connection.state = 'playing';
+      return { message: 'Playing song', statusCode: 200 };
+    }
+    const stream = await player.stream(
+      connection.queue[connection.currentIndex].url,
+      {
+        quality: 3,
+        seek: time,
+      },
+    );
+    connection.seek = time;
+    const resource = createAudioResource(stream.stream, {
+      inputType: stream.type,
+      inlineVolume: true,
+    });
+    connection.player.play(resource);
+    connection.stream = resource;
+    resource.volume.setVolume(connection.volume / 100);
     connection.state = 'playing';
     this.guildConnectionService.set(guildId, connection);
     return { message: 'Playing song', statusCode: 200 };
@@ -164,5 +197,31 @@ export class PlayerService {
     connection.currentIndex = connection.queue.indexOf(currentSong);
     this.guildConnectionService.set(guildId, connection);
     return { message: 'Shuffled queue', statusCode: 200 };
+  }
+
+  async setVolume(guildId: string, value: number) {
+    if (value < 0 || value > 100)
+      throw new BadRequestException('Volume must be between 0 and 100');
+    const guild = this.client.guilds.cache.get(guildId);
+    if (!guild) throw new NotFoundException('Guild not found');
+    const connection = this.guildConnectionService.get(guildId);
+    if (connection.stream) {
+      connection.stream.volume.setVolume(value / 100);
+      connection.volume = value;
+    }
+    this.guildConnectionService.set(guildId, connection);
+    return { message: 'Set volume', statusCode: 200 };
+  }
+
+  async seek(guildId: string, value: number) {
+    if (value < 0)
+      throw new BadRequestException('Seek value must be greater than 0');
+    const guild = this.client.guilds.cache.get(guildId);
+    if (!guild) throw new NotFoundException('Guild not found');
+    const connection = this.guildConnectionService.get(guildId);
+    this.playAt(guildId, value);
+    connection.seek = value;
+    this.guildConnectionService.set(guildId, connection);
+    return { message: 'Set volume', statusCode: 200 };
   }
 }

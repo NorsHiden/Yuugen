@@ -109,7 +109,8 @@ export class VoiceService {
       state: guildConnection.state,
       loopState: guildConnection.loopState,
       volume: guildConnection.volume,
-      seek: guildConnection.seek,
+      seek:
+        guildConnection.stream?.playbackDuration + guildConnection.seek * 1000,
     };
   }
 }

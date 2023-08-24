@@ -102,6 +102,19 @@ export class VoiceController {
     return this.playerService.shuffle(guildId);
   }
 
+  @Post('volume')
+  async volume(
+    @Query('guildId') guildId: string,
+    @Query('value') value: string,
+  ) {
+    return this.playerService.setVolume(guildId, +value);
+  }
+
+  @Post('seek')
+  async seek(@Query('guildId') guildId: string, @Query('value') value: string) {
+    return this.playerService.seek(guildId, +value);
+  }
+
   @Sse('updates')
   updates(@Query('guildId') guildId: string): Observable<MessageEvent> {
     return interval(1000).pipe(

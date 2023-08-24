@@ -22,6 +22,8 @@ export const MusicController = ({ currentGuild }: MusicControllerProps) => {
     "playing" | "paused" | "idle"
   >("idle");
   const [loopState, setLoopState] = useState<"none" | "queue" | "song">("none");
+  const [volume, setVolume] = useState<number>(100);
+  const [seek, setSeek] = useState<number>(0);
   const [event, setEvent] = useState<EventSource | null>(null);
 
   useEffect(() => {
@@ -37,6 +39,8 @@ export const MusicController = ({ currentGuild }: MusicControllerProps) => {
       setCurrentIndex(data.currentIndex);
       setCurrentState(data.state);
       setLoopState(data.loopState);
+      setVolume(data.volume);
+      if (data.seek) setSeek(data.seek);
       if (!data.currentVoice) setCurrentVoiceChannel({} as Channel);
       else setCurrentVoiceChannel(data.currentVoice);
     };
@@ -70,6 +74,8 @@ export const MusicController = ({ currentGuild }: MusicControllerProps) => {
         currentIndex={currentIndex}
         currentState={currentState}
         loopState={loopState}
+        volume={volume}
+        seek={seek}
       />
     </div>
   );
