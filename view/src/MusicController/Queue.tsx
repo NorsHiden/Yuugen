@@ -48,9 +48,9 @@ const QueueItem = ({
         return (
           <>
             {currentState == "playing" ? (
-              <BsFillStopCircleFill size="32" />
+              <BsFillStopCircleFill size="24" />
             ) : (
-              <BsFillPlayCircleFill size="32" />
+              <BsFillPlayCircleFill size="24" />
             )}
           </>
         );
@@ -63,7 +63,7 @@ const QueueItem = ({
       else if (currentState == "paused")
         return (
           <>
-            <BsFillPlayCircleFill size="32" />
+            <BsFillPlayCircleFill size="24" />
           </>
         );
       else
@@ -73,7 +73,7 @@ const QueueItem = ({
           </>
         );
     } else {
-      return <>{hovered ? <BsFillPlayCircleFill size="32" /> : index + 1}</>;
+      return <>{hovered ? <BsFillPlayCircleFill size="24" /> : index + 1}</>;
     }
   };
 
@@ -99,26 +99,26 @@ const QueueItem = ({
         <div className="music-queue-item-artist">{song.author}</div>
       </div>
       <div className="music-queue-item-duration">
-        <BiTime size="24" className="music-queue-item-duration-icon" />
+        <BiTime size="20" className="music-queue-item-duration-icon" />
         <div className="music-queue-item-duration-time">
           {song.raw_duration}
         </div>
       </div>
       <div className="music-queue-item-source">
-        <BiLogoYoutube size="24" />
+        <BiLogoYoutube size="20" />
       </div>
       <div className="music-queue-item-requester">
-        <BiUserCircle size="24" />
+        <BiUserCircle size="20" />
         <div className="music-queue-item-requester-name">
           {song.requester_name}
         </div>
       </div>
       <BiTrash
-        size="24"
+        size="20"
         className="music-queue-item-remove"
         onClick={removeFromQueue}
       />
-      <MdDragHandle size="24" className="music-queue-item-drag" />
+      <MdDragHandle size="20" className="music-queue-item-drag" />
     </div>
   );
 };

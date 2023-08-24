@@ -26,16 +26,16 @@ const VoiceChannelItem = ({
 
   const regularChannel = (
     <div className="music-channel-item" onClick={joinChannel}>
-      <BiVolumeFull size="32" />
+      <BiVolumeFull size="24" />
       <div className="music-channel-item-name">{channel.name}</div>
     </div>
   );
   const activeChannel = (
     <div className="music-channel-item-active">
-      <BiVolumeFull size="32" color="" />
+      <BiVolumeFull size="24" color="" />
       <div className="music-channel-item-name">{channel.name}</div>
       <div className="music-channel-item-disconnect-btn" onClick={leaveChannel}>
-        <BsFillTelephoneXFill size="16" />
+        <BsFillTelephoneXFill size="12" />
       </div>
     </div>
   );

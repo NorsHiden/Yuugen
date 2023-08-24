@@ -15,11 +15,11 @@ export const NavBar = () => {
         Icon={BiLogoMastercard}
         startColor="#D3A78A"
         endColor="#007296"
-        size="3rem"
+        size="2rem"
       />
       <div className="navbar-list">
         <div className="navbar-item">
-          <BiSolidDashboard size="35" />
+          <BiSolidDashboard size="25" />
           <div className="navbar-item-hover">Dashboard</div>
         </div>
         <div className="navbar-item">
@@ -27,18 +27,18 @@ export const NavBar = () => {
             Icon={BiSolidMusic}
             startColor="#D3A78A"
             endColor="#007296"
-            size="2rem"
+            size="1.7rem"
           />
           <div className="navbar-item-hover">Music</div>
         </div>
       </div>
       <div className="navbar-settings">
         <div className="navbar-item">
-          <BiUser size="35" />
+          <BiUser size="25" />
           <div className="navbar-item-hover">Account</div>
         </div>
         <a className="navbar-item" href="/api/oauth/logout">
-          <BiLogOutCircle size="35" />
+          <BiLogOutCircle size="25" />
           <div className="navbar-item-hover">Logout</div>
         </a>
       </div>

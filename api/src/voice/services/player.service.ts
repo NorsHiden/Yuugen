@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Client } from 'discord.js';
 import { GuildConnectionService } from './guild-connection.service';
 import player from 'play-dl';
@@ -17,8 +21,16 @@ export class PlayerService {
         .get(guild.id)
         .player.on('stateChange', (oldState, newState) => {
           const currentGuild = this.guildConnectionService.get(guild.id);
-          if (newState.status === 'idle' && currentGuild.state == 'playing')
+          if (newState.status === 'idle' && currentGuild.state == 'playing') {
+            if (
+              currentGuild.loopState == 'none' &&
+              currentGuild.currentIndex + 1 >= currentGuild.queue.length
+            )
+              return this.stop(guild.id);
+            else if (currentGuild.loopState == 'song')
+              return this.playIndex(guild.id, currentGuild.currentIndex);
             this.skip(guild.id);
+          }
         });
     });
   }
@@ -98,7 +110,7 @@ export class PlayerService {
     if (!connection) throw new NotFoundException('Connection not found');
     if (connection.currentIndex + 1 < connection.queue.length)
       connection.currentIndex++;
-    else if (connection.isLooping) connection.currentIndex = 0;
+    else if (connection.loopState == 'queue') connection.currentIndex = 0;
     else return;
     connection.state = 'idle';
     this.guildConnectionService.set(guildId, connection);
@@ -111,7 +123,9 @@ export class PlayerService {
     if (!guild) throw new NotFoundException('Guild not found');
     const connection = this.guildConnectionService.get(guildId);
     if (!connection) throw new NotFoundException('Connection not found');
-    connection.isLooping = !connection.isLooping;
+    if (connection.loopState === 'none') connection.loopState = 'queue';
+    else if (connection.loopState === 'queue') connection.loopState = 'song';
+    else connection.loopState = 'none';
     this.guildConnectionService.set(guildId, connection);
     return { message: 'Looped song', statusCode: 200 };
   }
@@ -126,5 +140,29 @@ export class PlayerService {
     connection.currentIndex = -1;
     this.guildConnectionService.set(guildId, connection);
     return { message: 'Stopped song', statusCode: 200 };
+  }
+
+  async shuffle(guildId: string) {
+    const guild = this.client.guilds.cache.get(guildId);
+    if (!guild) throw new NotFoundException('Guild not found');
+    const connection = this.guildConnectionService.get(guildId);
+    if (!connection) throw new NotFoundException('Connection not found');
+    if (connection.queue.length <= 1)
+      throw new BadRequestException(
+        "Can't shuffle queue with less than 2 songs",
+      );
+    if (connection.currentIndex < 0)
+      throw new BadRequestException("Can't shuffle queue while not playing");
+    const currentSong = connection.queue[connection.currentIndex];
+    for (let i = connection.queue.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [connection.queue[i], connection.queue[j]] = [
+        connection.queue[j],
+        connection.queue[i],
+      ];
+    }
+    connection.currentIndex = connection.queue.indexOf(currentSong);
+    this.guildConnectionService.set(guildId, connection);
+    return { message: 'Shuffled queue', statusCode: 200 };
   }
 }

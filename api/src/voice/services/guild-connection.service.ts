@@ -13,10 +13,11 @@ interface GuildConnection {
   player: AudioPlayer | null;
   stream: AudioResource<null> | null;
   queue: Song[];
-  volume: number;
   state: 'playing' | 'paused' | 'idle';
   currentIndex: number;
-  isLooping: boolean;
+  loopState: 'none' | 'queue' | 'song';
+  volume: number;
+  seek: number;
 }
 
 const defaultGuildConnection = (): GuildConnection => ({
@@ -24,10 +25,11 @@ const defaultGuildConnection = (): GuildConnection => ({
   player: createAudioPlayer(),
   stream: null,
   queue: [],
-  volume: 100,
   state: 'idle',
   currentIndex: -1,
-  isLooping: false,
+  loopState: 'none',
+  volume: 100,
+  seek: 0,
 });
 
 @Injectable()

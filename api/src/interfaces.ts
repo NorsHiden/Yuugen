@@ -19,6 +19,9 @@ export interface GuildUpdate {
   queue: Song[];
   currentIndex: number;
   state: 'playing' | 'paused' | 'idle';
+  loopState: 'none' | 'queue' | 'song';
+  volume: number;
+  seek: number;
 }
 
 export interface MessageEvent {

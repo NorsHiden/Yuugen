@@ -97,6 +97,11 @@ export class VoiceController {
     return this.playerService.loop(guildId);
   }
 
+  @Post('shuffle')
+  async shuffle(@Query('guildId') guildId: string) {
+    return this.playerService.shuffle(guildId);
+  }
+
   @Sse('updates')
   updates(@Query('guildId') guildId: string): Observable<MessageEvent> {
     return interval(1000).pipe(

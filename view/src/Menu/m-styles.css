@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  min-height: 4rem;
+  min-height: 2rem;
   padding-top: 0.3rem;
 }
 
@@ -12,7 +12,7 @@
   display: flex;
   position: absolute;
   flex-direction: column;
-  font-size: 12px;
+  font-size: 10px;
   color: #d3a78a;
   background-color: #000b0f;
   font-family: "inter", sans-serif;
@@ -20,14 +20,14 @@
   border-width: 1px;
   border-radius: 15px;
   width: 13rem;
-  max-height: 2rem;
-  min-height: 2rem;
-  top: 1.2rem;
+  max-height: 1.7rem;
+  min-height: 1.7rem;
+  top: 0.7rem;
   transition: 0.2s;
   border-color: #d3a78a;
   &:focus {
     max-height: 10rem;
-    min-height: 2rem;
+    min-height: 1.7rem;
     border-radius: 15px 15px 5px 5px;
   }
   &:focus .selected-guild-icon {
@@ -42,15 +42,15 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  min-height: 2rem;
+  min-height: 1.7rem;
   min-width: 100%;
   cursor: pointer;
 }
 
 .selected-guild-pic {
   margin-left: 0.3rem;
-  width: 1.4rem;
-  height: 1.4rem;
+  width: 1rem;
+  height: 1rem;
   border-radius: 50%;
   background-color: #d3a78a;
 }
@@ -88,7 +88,7 @@
   flex-direction: row;
   align-items: center;
   border-radius: 10px;
-  min-height: 2rem;
+  min-height: 1.7rem;
   cursor: pointer;
   color: #d3a78a;
   &:hover {
@@ -109,6 +109,7 @@
   align-items: center;
   margin-left: auto;
   margin-right: 1rem;
+  margin-top: 0.3rem;
   cursor: pointer;
 }
 

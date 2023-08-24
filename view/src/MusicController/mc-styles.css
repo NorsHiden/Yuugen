@@ -32,7 +32,7 @@
 .music-controller-vertical-split {
   display: flex;
   flex-direction: row;
-  min-height: 20rem;
+  height: 15rem;
   width: 100%;
 }
 
@@ -41,11 +41,11 @@
 .music-playing-now {
   display: flex;
   flex-direction: column;
-  height: 18rem;
-  min-width: 37rem;
+  height: 100%;
+  min-width: 27rem;
   background-size: cover;
   border-radius: 1rem;
-  margin: 1rem;
+  margin: 0.5rem 1rem 1rem 1rem;
 }
 
 .music-playing-now-grad {
@@ -64,24 +64,30 @@
 .music-header {
   margin-top: 1rem;
   width: 100%;
-  font-size: 32px;
+  font-size: 24px;
   font-weight: 900;
   color: white;
 }
 
 .music-playing-now-author {
   margin-top: 2rem;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 300;
 }
 
 .music-playing-now-title {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   width: 90%;
-  height: 9rem;
+  height: 6rem;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.music-playing-now-requestedby {
+  margin-top: 1rem;
+  font-size: 12px;
+  font-weight: 300;
 }
 
 /*  Channels */
@@ -89,11 +95,11 @@
 .music-channels {
   display: flex;
   flex-direction: column;
-  height: 18rem;
+  height: 15rem;
   width: 100%;
   font-family: "inter", sans-serif;
   color: #fff;
-  margin: 1rem;
+  margin: 0.5rem 1rem 1rem 1rem;
 }
 
 .music-channel-list {
@@ -101,7 +107,8 @@
   flex-direction: column;
   height: 100%;
   width: 100%;
-  padding-top: 1rem;
+  padding-top: 0.5rem;
+  font-size: 12px;
   font-family: "inter", sans-serif;
   overflow-y: hidden;
   &:hover {
@@ -118,10 +125,10 @@
 
 .music-channel-item {
   display: flex;
-  min-height: 3rem;
+  min-height: 2.2rem;
   align-items: center;
   border-radius: 0.5rem;
-  padding-left: 1rem;
+  padding-left: 0.5rem;
   cursor: pointer;
   color: #a4a4a4;
   &:hover {
@@ -139,9 +146,9 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  min-height: 3rem;
+  min-height: 2.2rem;
   border-radius: 0.5rem;
-  padding-left: 1rem;
+  padding-left: 0.5rem;
   cursor: pointer;
   background: #003344;
   border-radius: 0.5rem;
@@ -152,7 +159,7 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  min-height: 3rem;
+  min-height: 2rem;
   border-radius: 0.5rem;
   padding-left: 1rem;
   margin-left: auto;
@@ -170,10 +177,10 @@
 
 .music-channel-skeleton {
   display: flex;
-  min-height: 3rem;
+  min-height: 2rem;
   align-items: center;
   border-radius: 0.5rem;
-  padding-left: 1rem;
+  padding-left: 0.5rem;
   cursor: pointer;
   color: #a4a4a4;
   background: linear-gradient(
@@ -189,9 +196,9 @@
 .music-search {
   display: flex;
   flex-direction: column;
-  min-width: 30rem;
+  min-width: 22rem;
   height: calc(100% - 6rem);
-  padding-top: 1rem;
+  padding-top: 0.5rem;
   font-family: "inter", sans-serif;
   color: #a4a4a4;
 }
@@ -200,13 +207,13 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  width: calc(100% - 3.5rem);
-  min-height: 3rem;
+  width: calc(100% - 2.8rem);
+  min-height: 2.2rem;
   border-style: solid;
   border-color: #001a23;
   color: #a4a4a4;
-  border-radius: 20px;
-  padding: 0 1rem;
+  border-radius: 0.8rem;
+  padding: 0 0.7rem;
   margin-top: 0.5rem;
   transition: 0.2s;
   &:focus-within {
@@ -216,6 +223,7 @@
 
 .music-search-bar {
   width: 100%;
+  font-size: 12px;
   &::placeholder {
     color: #001a23;
   }
@@ -239,16 +247,16 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  margin-top: 1rem;
+  margin-top: 0.7rem;
 }
 
 .music-search-item {
   display: flex;
   flex-direction: row;
   align-items: center;
-  min-height: 5rem;
-  border-radius: 20px;
-  padding: 0 1rem;
+  min-height: 4rem;
+  border-radius: 0.7rem;
+  padding: 0 0.5rem;
   margin-top: 0.5rem;
   cursor: pointer;
   &:hover {
@@ -266,18 +274,18 @@
 }
 
 .music-search-item-pic {
-  height: 4rem;
-  width: 4rem;
+  height: 3.5rem;
+  width: 3.5rem;
   object-fit: cover;
-  border-radius: 15px;
+  border-radius: 0.7rem;
   background-color: #003344;
 }
 
 .music-search-item-title {
   margin-left: 0.5rem;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 700;
-  max-width: 20rem;
+  max-width: 14rem;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -285,7 +293,7 @@
 
 .music-search-item-artist {
   margin-left: 0.5rem;
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 300;
   max-width: 20rem;
   overflow: hidden;
@@ -295,8 +303,8 @@
 
 .music-search-item-icon {
   display: none;
-  min-width: 2rem;
-  min-height: 2rem;
+  min-width: 1.5rem;
+  min-height: 1.5rem;
   margin-left: auto;
   margin-right: 1rem;
   color: #003344;
@@ -309,6 +317,7 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
+  padding-top: 0.5rem;
   font-family: "inter", sans-serif;
   color: #a4a4a4;
 }
@@ -318,7 +327,7 @@
   flex-direction: column;
   align-items: center;
   width: 95%;
-  padding-top: 2rem;
+  padding-top: 1.5rem;
   font-family: "inter", sans-serif;
   &::-webkit-scrollbar {
     width: 0.5rem;
@@ -333,9 +342,9 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  min-height: 5rem;
+  min-height: 4rem;
   width: 100%;
-  border-radius: 15px;
+  border-radius: 0.7rem;
   padding-left: 0.5rem;
   font-family: inter, sans-serif;
   transition: 0.2s;
@@ -357,9 +366,9 @@
   flex-direction: row;
   align-items: center;
   width: 100%;
-  min-height: 5rem;
+  min-height: 4rem;
   scale: 101%;
-  border-radius: 15px;
+  border-radius: 0.7rem;
   padding-left: 0.5rem;
   font-family: inter, sans-serif;
   background-color: #003344;
@@ -370,10 +379,10 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 900;
-  width: 3rem;
-  height: 3rem;
+  width: 2.5rem;
+  height: 2.5rem;
   margin: 0 1rem;
   border-radius: 1rem;
   transition: 0.3s;
@@ -386,18 +395,18 @@
 }
 
 .music-queue-item-pic {
-  height: 4rem;
-  width: 4rem;
+  height: 3rem;
+  width: 3rem;
   object-fit: cover;
-  border-radius: 15px;
+  border-radius: 0.7rem;
   background-color: #a4a4a4;
 }
 
 .music-queue-item-title {
   margin-left: 1rem;
-  font-size: 16px;
+  font-size: 12px;
   font-weight: 700;
-  width: 20rem;
+  width: 15rem;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -405,9 +414,9 @@
 
 .music-queue-item-artist {
   margin-left: 1rem;
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 300;
-  max-width: 20rem;
+  max-width: 15rem;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -418,12 +427,12 @@
   flex-direction: row;
   align-items: center;
   margin-left: 1rem;
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 300;
 }
 
 .music-queue-item-duration-time {
-  font-size: 16px;
+  font-size: 12px;
   width: 5rem;
 }
 
@@ -435,19 +444,20 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-left: 5rem;
+  margin-left: 2rem;
 }
 
 .music-queue-item-requester {
   display: flex;
   flex-direction: row;
   align-items: center;
+  font-size: 12px;
   margin-left: 5rem;
 }
 
 .music-queue-item-requester-name {
   margin-left: 0.5rem;
-  font-size: 14px;
+  font-size: 10px;
   font-weight: 300;
   max-width: 20rem;
   overflow: hidden;
@@ -485,7 +495,7 @@
 
 .musicplayer-placeholder {
   width: 100%;
-  min-height: 9rem;
+  min-height: 6rem;
 }
 
 .music-player {
@@ -494,29 +504,29 @@
   align-items: center;
   position: absolute;
   z-index: 1;
-  height: 6rem;
-  right: 2rem;
-  width: calc(100% - 8rem);
+  height: 4.5rem;
+  right: 1rem;
+  width: calc(100% - 5rem);
   background-color: #001a23;
-  border-radius: 1rem;
+  border-radius: 0.7rem;
   color: #d4a88b;
   font-family: "inter", sans-serif;
   transition: 0.2s;
 }
 
 .music-player-song-pic {
-  border-radius: 1rem;
-  height: 5rem;
-  width: 5rem;
+  border-radius: 0.7rem;
+  min-height: 3.5rem;
+  min-width: 3.5rem;
   margin-left: 0.5rem;
   background-position: 50%;
   background-size: cover;
 }
 
 .music-player-song-title {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 900;
-  width: 20rem;
+  width: 16rem;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -524,8 +534,8 @@
 }
 
 .music-player-song-artist {
-  font-size: 16px;
-  max-width: 20rem;
+  font-size: 12px;
+  max-width: 16rem;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -540,47 +550,6 @@
 }
 
 .music-player-controls-icon {
-  margin-right: 1rem;
-  font-size: 32px;
-  cursor: pointer;
-  &:hover {
-    color: #fff;
-  }
-}
-
-.music-player-song-range-bar {
-  margin-right: 1rem;
-  width: 30rem;
-  &::-webkit-slider-runnable-track {
-    background: #002330;
-    height: 0.5rem;
-    border-radius: 1rem;
-  }
-  &::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    margin-top: 1.5rem;
-    height: 1rem;
-    width: 1rem;
-    border-radius: 1rem;
-    background: #d4a88b;
-    margin-top: -0.25rem;
-    cursor: pointer;
-  }
-}
-
-.music-player-song-time {
-  margin-right: 1rem;
-}
-
-.music-player-song-volume {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  margin-right: 1rem;
-}
-
-.music-player-song-volume-icon {
-  margin-left: 4rem;
   margin-right: 0.5rem;
   font-size: 24px;
   cursor: pointer;
@@ -589,30 +558,72 @@
   }
 }
 
-.music-player-song-volume-bar {
-  margin-right: 1rem;
-  width: 10rem;
+.music-player-song-range-bar {
+  margin-right: 0.5rem;
+  width: 100%;
   &::-webkit-slider-runnable-track {
     background: #002330;
-    height: 0.5rem;
-    border-radius: 1rem;
+    height: 0.4rem;
+    border-radius: 0.7rem;
   }
   &::-webkit-slider-thumb {
     -webkit-appearance: none;
-    margin-top: 1.5rem;
-    height: 1rem;
-    width: 1rem;
-    border-radius: 1rem;
+    margin-top: 1.3rem;
+    height: 0.7rem;
+    width: 0.7rem;
+    border-radius: 0.7rem;
     background: #d4a88b;
-    margin-top: -0.25rem;
+    margin-top: -0.1rem;
+    cursor: pointer;
+  }
+}
+
+.music-player-song-time {
+  font-size: 12px;
+  margin-right: 1rem;
+}
+
+.music-player-song-volume {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: auto;
+}
+
+.music-player-song-volume-icon {
+  margin-right: 0.5rem;
+  font-size: 18px;
+  cursor: pointer;
+  margin-left: auto;
+  &:hover {
+    color: #fff;
+  }
+}
+
+.music-player-song-volume-bar {
+  &::-webkit-slider-runnable-track {
+    background: #002330;
+    height: 0.4rem;
+    border-radius: 0.7rem;
+  }
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    margin-top: 1.3rem;
+    height: 0.7rem;
+    width: 0.7rem;
+    border-radius: 0.7rem;
+    background: #d4a88b;
+    margin-top: -0.1rem;
     cursor: pointer;
   }
 }
 
 .music-player-song-shuffle {
   margin-right: 1rem;
-  margin-left: auto;
-  font-size: 32px;
+  margin-left: 1rem;
+  min-width: 24px;
+  min-height: 24px;
+  font-size: 24px;
   cursor: pointer;
   &:hover {
     color: #fff;
@@ -620,8 +631,10 @@
 }
 
 .music-player-song-loop {
-  margin-right: 3rem;
-  font-size: 32px;
+  margin-right: 1.5rem;
+  min-height: 24px;
+  min-width: 24px;
+  font-size: 24px;
   cursor: pointer;
   &:hover {
     color: #fff;

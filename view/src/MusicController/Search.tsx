@@ -64,7 +64,7 @@ export const Search = ({ currentGuild, queue }: SearchProps) => {
           className="music-search-bar"
           onChange={(e) => setSearch(e.target.value)}
         />
-        <BiSearchAlt size="32" className="music-search-bar-icon" />
+        <BiSearchAlt size="26" className="music-search-bar-icon" />
       </div>
       <div className="music-search-results">
         {searchResults.map((result) => (

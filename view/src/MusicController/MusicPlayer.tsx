@@ -9,12 +9,18 @@ import { BsFillPlayCircleFill } from "react-icons/bs";
 import { FaPauseCircle } from "react-icons/fa";
 import { Guild, Song } from "../interfaces";
 import axios from "axios";
+import {
+  PiRepeatDuotone,
+  PiRepeatFill,
+  PiRepeatOnceDuotone,
+} from "react-icons/pi";
 
 interface MusicPlayerProps {
   currentGuild: Guild | null;
   queue: Song[];
   currentIndex: number;
   currentState: string;
+  loopState: "none" | "queue" | "song";
 }
 
 export const MusicPlayer = ({
@@ -22,6 +28,7 @@ export const MusicPlayer = ({
   queue,
   currentIndex,
   currentState,
+  loopState,
 }: MusicPlayerProps) => {
   const hideOrDisplay = () => {
     if (currentIndex > -1)
@@ -86,8 +93,18 @@ export const MusicPlayer = ({
         <BiSolidVolumeFull className="music-player-song-volume-icon" />
         <input type="range" className="music-player-song-volume-bar" />
       </div>
-      <BiShuffle className="music-player-song-shuffle" />
-      <BiRepeat className="music-player-song-loop" />
+      <div onClick={() => audioButton("shuffle")}>
+        <BiShuffle className="music-player-song-shuffle" />
+      </div>
+      <div onClick={() => audioButton("loop")}>
+        {loopState == "none" ? (
+          <PiRepeatFill className="music-player-song-loop" />
+        ) : loopState == "song" ? (
+          <PiRepeatOnceDuotone className="music-player-song-loop" />
+        ) : (
+          <PiRepeatDuotone className="music-player-song-loop" />
+        )}
+      </div>
     </div>
   );
 };

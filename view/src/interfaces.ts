@@ -50,5 +50,8 @@ export interface GuildUpdate {
   currentVoice: Channel;
   queue: Song[];
   currentIndex: number;
-  state: 'playing' | 'paused' | 'idle';
+  state: "playing" | "paused" | "idle";
+  loopState: "queue" | "song" | "none";
+  volume: number;
+  seek: number;
 }

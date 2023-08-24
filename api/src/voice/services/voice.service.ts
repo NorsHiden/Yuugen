@@ -107,6 +107,9 @@ export class VoiceService {
       queue: guildConnection.queue,
       currentIndex: guildConnection.currentIndex,
       state: guildConnection.state,
+      loopState: guildConnection.loopState,
+      volume: guildConnection.volume,
+      seek: guildConnection.seek,
     };
   }
 }
