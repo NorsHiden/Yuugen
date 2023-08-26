@@ -11,9 +11,9 @@ export const App = () => {
 
   return (
     <div>
-      <div className="container">
+      <div className="flex flex-row h-screen">
         <NavBar />
-        <div className="sub-container">
+        <div className="flex flex-col h-full w-full">
           <Menu
             guildsState={{ guilds, setGuilds }}
             currentGuildState={{ currentGuild, setCurrentGuild }}

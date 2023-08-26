@@ -2,7 +2,6 @@ import { BiChevronDown } from "react-icons/bi";
 import { TbNotification } from "react-icons/tb";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "./m-styles.css";
 import { Guild } from "../interfaces";
 
 interface GuildItemProps {
@@ -12,14 +11,14 @@ interface GuildItemProps {
 const GuildItem = ({ guild }: GuildItemProps) => {
   return (
     <div
-      className="guild-list-item"
+      className="flex flex-row items-center min-h-[1.7rem] min-w-full cursor-pointer hover:bg-gradient-to-r hover:from-yuugenColorSecond hover:to-transparent rounded-s-md"
       onClick={() => window.location.replace(`/${guild.id}/voice`)}
     >
       <img
-        className="selected-guild-pic"
+        className="ml-1 w-4 h-4 rounded-2xl bg-yuugenColorFirst"
         src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png`}
       />
-      <div className="selected-guild-title">{guild.name}</div>
+      <div className="ml-2">{guild.name}</div>
     </div>
   );
 };
@@ -61,38 +60,42 @@ export const Menu = ({ guildsState, currentGuildState }: MenuProps) => {
   }, []);
 
   return (
-    <div className="menu">
-      <div className="select-guild" tabIndex={0}>
-        <div className="selected-guild">
+    <div className="flex flex-row items-center min-h-[2rem] pt-1">
+      <div
+        className="group flex absolute flex-col text-xs text-[#d3a78a] bg-yuugenBackgroundColor font-sans border-solid border-[1px] rounded-2xl w-52 max-h-7 min-h-7 top-3 duration-200 border-yuugenColorFirst focus:max-h-40 focus:rounded-b-md focus:rounded-t-2xl"
+        tabIndex={0}
+      >
+        <div className="flex flex-row items-center min-h-[1.7rem] min-w-full cursor-pointer">
           {currentGuildState.currentGuild ? (
             <>
               <img
-                className="selected-guild-pic"
+                className="ml-1 w-4 h-4 rounded-2xl bg-yuugenColorFirst"
                 src={`https://cdn.discordapp.com/icons/${currentGuildState.currentGuild.id}/${currentGuildState.currentGuild.icon}.png`}
               />
-              <div className="selected-guild-title">
-                {currentGuildState.currentGuild.name}
-              </div>
+              <div className="ml-2">{currentGuildState.currentGuild.name}</div>
             </>
           ) : (
             <>
-              <div className="selected-guild-title">Select a guild...</div>
+              <div className="ml-2">Select a guild...</div>
             </>
           )}
 
-          <BiChevronDown size="16" className="selected-guild-icon" />
+          <BiChevronDown
+            size="16"
+            className="ml-auto mr-2 duration-500 group-focus:rotate-180"
+          />
         </div>
-        <div className="guild-list">
+        <div className="hidden flex-col grap-[0.3rem] max-h-80 overflow-auto p-2 group-focus:flex">
           {guildsState.guilds.map((guild) => (
             <GuildItem key={guild.id} guild={guild} />
           ))}
         </div>
       </div>
-      <div className="menu-profile">
-        <TbNotification size="32" className="menu-notification" />
-        <div className="menu-profile-highlight">
+      <div className="flex flex-row items-center ml-auto mr-4 mt-1 cursor-pointer">
+        <TbNotification className="text-yuugenColorSecond pr-4 text-5xl" />
+        <div className="flex items-center justify-center bg-gradient-to-b from-yuugenColorThird to-yuugenColorFirst rounded-xl w-9 h-9">
           <img
-            className="menu-profile-pic"
+            className="rounded-xl w-8 h-8 border-solid border-2 border-yuugenBackgroundColor"
             src={`https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}`}
           />
         </div>

@@ -1,9 +1,6 @@
-* {
-  margin: 0;
-  padding: 0;
-  text-decoration: none;
-  list-style: none;
-}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 body {
   background-color: #000b0f;
@@ -11,17 +8,4 @@ body {
 
 input {
   all: unset;
-}
-
-.container {
-  display: flex;
-  flex-direction: row;
-  height: 100vh;
-}
-
-.sub-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
 }
