@@ -81,44 +81,53 @@ const QueueItem = ({
     <div
       className={
         index === currentIndex
-          ? "music-queue-item-selected"
-          : "music-queue-item"
+          ? "flex flex-row items-center w-full min-h-[4rem] rounded-xl pl-2 duration-200 bg-[#003344] text-yuugenColorFirst"
+          : "flex flex-row items-center w-full min-h-[4rem] rounded-xl pl-2 duration-200 opacity-80 hover:opacity-100 hover:bg-gradient-to-r hover:from-yuugenColorSecond to-transparent hover:scale-[101%]"
       }
     >
       <div
-        className="music-queue-item-num"
+        className="flex items-center justify-center w-10 h-10 mr-2 font-bold rounded-2xl cursor-pointer duration-300 hover:bg-[#002330] hover:text-yuugenColorFirst hover:rounded-full"
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
         onClick={selectSong}
       >
         {PlaySongHover()}
       </div>
-      <img className="music-queue-item-pic" src={song.thumbnail} />
+      <img
+        className="h-12 w-12 object-cover rounded-xl bg-[#a4a4a4]"
+        src={song.thumbnail}
+      />
       <div>
-        <div className="music-queue-item-title"> {song.title}</div>
-        <div className="music-queue-item-artist">{song.author}</div>
-      </div>
-      <div className="music-queue-item-duration">
-        <BiTime size="20" className="music-queue-item-duration-icon" />
-        <div className="music-queue-item-duration-time">
-          {song.raw_duration}
+        <div className="ml-4 text-xs font-semibold w-60 overflow-hidden whitespace-nowrap text-ellipsis">
+          {" "}
+          {song.title}
+        </div>
+        <div className="ml-4 text-[10px] font-light w-60 overflow-hidden whitespace-nowrap text-ellipsis">
+          {song.author}
         </div>
       </div>
-      <div className="music-queue-item-source">
+      <div className="flex flex-row items-center ml-4 text-[10px] font-light">
+        <BiTime size="20" className="mr-2" />
+        <div className="w-20 text-xs">{song.raw_duration}</div>
+      </div>
+      <div className="flex flex-row items-center ml-8">
         <BiLogoYoutube size="20" />
       </div>
-      <div className="music-queue-item-requester">
+      <div className="flex flex-row items-center text-xs ml-20">
         <BiUserCircle size="20" />
-        <div className="music-queue-item-requester-name">
+        <div className="ml-2 text-[10px] font-light max-w-xs overflow-hidden whitespace-nowrap text-ellipsis">
           {song.requester_name}
         </div>
       </div>
       <BiTrash
         size="20"
-        className="music-queue-item-remove"
+        className="flex flex-row items-center ml-auto cursor-pointer hover:text-white"
         onClick={removeFromQueue}
       />
-      <MdDragHandle size="20" className="music-queue-item-drag" />
+      <MdDragHandle
+        size="20"
+        className="flex flex-row items-center ml-8 mr-4 cursor-grab hover:text-white active:cursor-grabbing"
+      />
     </div>
   );
 };
@@ -137,9 +146,9 @@ export const Queue = ({
   currentState,
 }: QueueProps) => {
   return (
-    <div className="music-queue">
+    <div className="flex flex-col items-center w-full pt-2 font-sans text-[#a4a4a4]">
       <div className="mt-4 w-full text-2xl font-extrabold">Queue</div>
-      <div className="music-queue-list">
+      <div className="flex flex-col items-center w-[95%] pt-6">
         {queue.map((song, index) => (
           <QueueItem
             key={index}

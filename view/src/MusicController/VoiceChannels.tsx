@@ -30,7 +30,7 @@ const VoiceChannelItem = ({
       onClick={joinChannel}
     >
       <BiVolumeFull size="24" />
-      <div className="music-channel-item-name">{channel.name}</div>
+      <div className="ml-4">{channel.name}</div>
     </div>
   );
   const activeChannel = (

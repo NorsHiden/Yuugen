@@ -66,7 +66,7 @@ export const Search = ({ currentGuild, queue }: SearchProps) => {
       <div className="mt-4 w-full text-2xl font-extrabold">Search</div>
       <div
         tabIndex={2}
-        className="group flex flex-row items-center w-[calc(100%-1rem)] h-10 border-solid border-2 rounded-lg border-yuugenColorSecond pr-3 pl-3 mt-2 duration-200 focus-within:border-[#003344]"
+        className="group flex flex-row items-center w-[calc(100%-1rem)] min-h-[2.5rem] border-solid border-2 rounded-lg border-yuugenColorSecond pr-3 pl-3 mt-2 duration-200 focus-within:border-[#003344]"
       >
         <input
           type="text"

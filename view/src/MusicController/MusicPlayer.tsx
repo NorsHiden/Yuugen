@@ -65,13 +65,8 @@ export const MusicPlayer = ({
 
   const progressBarStyle = () => {
     if (currentIndex > -1)
-      return {
-        width: `${(seek / 1000 / queue[currentIndex].duration) * 100}%`,
-      };
-    else
-      return {
-        width: "0%",
-      };
+      return `${(seek / 1000 / queue[currentIndex].duration) * 100}%`;
+    else return "0%";
   };
 
   const fromSecondsToMinutes = (seconds: number) => {
@@ -83,9 +78,12 @@ export const MusicPlayer = ({
   };
 
   return (
-    <div className="music-player" style={hideOrDisplay()}>
+    <div
+      className="flex flex-row items-center absolute z-1 h-[4.5rem] right-4 w-[calc(100%-5rem)] bg-[#001a23] text-yuugenColorFirst rounded-xl transition-all duration-200"
+      style={hideOrDisplay()}
+    >
       <div
-        className="music-player-song-pic"
+        className="min-w-[4.5rem] h-[4.5rem] bg-cover bg-center rounded-l-xl"
         style={{
           backgroundImage: `url(${
             currentIndex > -1 ? queue[currentIndex].thumbnail : ""
@@ -93,31 +91,31 @@ export const MusicPlayer = ({
         }}
       />
       <div>
-        <div className="music-player-song-title">
+        <div className="text-sm font-bold w-64 overflow-hidden whitespace-nowrap text-ellipsis ml-4">
           {currentIndex > -1 ? queue[currentIndex].title : "Nothing is Playing"}
         </div>
-        <div className="music-player-song-artist">
+        <div className="text-xs max-w-[16rem] overflow-hidden whitespace-nowrap text-ellipsis ml-4">
           {currentIndex > -1 ? queue[currentIndex].author : ""}
         </div>
       </div>
-      <div className="music-player-controls">
+      <div className="flex flex-row items-center mr-4">
         <div onClick={() => audioButton("previous")}>
-          <BiSkipPrevious className="music-player-controls-icon" />
+          <BiSkipPrevious className="mr-2 text-2xl cursor-pointer hover:text-white" />
         </div>
         {currentState == "playing" ? (
           <div onClick={() => audioButton("pause")}>
-            <FaPauseCircle className="music-player-controls-icon" />
+            <FaPauseCircle className="mr-2 text-2xl cursor-pointer hover:text-white" />
           </div>
         ) : (
           <div onClick={() => audioButton("play")}>
-            <BsFillPlayCircleFill className="music-player-controls-icon" />
+            <BsFillPlayCircleFill className="mr-2 text-2xl cursor-pointer hover:text-white" />
           </div>
         )}
         <div onClick={() => audioButton("skip")}>
-          <BiSkipNext className="music-player-controls-icon" />
+          <BiSkipNext className="mr-2 text-2xl cursor-pointer hover:text-white" />
         </div>
       </div>
-      <div className="music-player-song-range-progress-bar">
+      <div className="flex items-center h-2 w-full rounded-xl">
         <input
           type="range"
           min="0"
@@ -125,19 +123,18 @@ export const MusicPlayer = ({
           step="1"
           value={currentIndex > -1 ? seek / 1000 : "0"}
           onChange={(e) => changeSeek(e.target.value)}
-          className="music-player-song-range-bar"
+          className="mr-2 w-full h-2 cursor-pointer transition-all duration-200 bg-[#003344] rounded-lg hover:h-4"
         />
         <div
-          className="music-player-song-progress"
-          style={progressBarStyle()}
+          className={`flex absolute left-auto pointer-events-none h-2 w-[${progressBarStyle()}] bg-[#d4a88b] rounded-lg`}
         ></div>
       </div>
-      <div className="music-player-song-time">
+      <div className="text-xs font-bold mr-4 ml-2">
         {currentIndex > -1 ? `${fromSecondsToMinutes(seek / 1000)}` : ""}
       </div>
-      <div className="music-player-song-volume">
-        <BiSolidVolumeFull className="music-player-song-volume-icon" />
-        <div className="music-player-song-range-progress-bar">
+      <div className="flex flex-row items-center ml-auto">
+        <BiSolidVolumeFull className="mr-2 text-lg cursor-pointer ml-auto hover:text-white" />
+        <div className="flex items-center w-24 h-2 rounded-xl">
           <input
             type="range"
             min="0"
@@ -145,24 +142,23 @@ export const MusicPlayer = ({
             step="1"
             value={volume}
             onChange={(e) => changeVolume(e.target.value)}
-            className="music-player-song-volume-bar"
+            className="mr-2 w-full h-2 cursor-pointer transition-all duration-200 bg-[#003344] rounded-lg hover:h-4"
           />
           <div
-            className="music-player-song-progress"
-            style={{ width: `${volume}%` }}
+            className={`flex absolute left-auto pointer-events-none h-2 w-[${volume}] bg-[#d4a88b] rounded-lg`}
           ></div>
         </div>
       </div>
       <div onClick={() => audioButton("shuffle")}>
-        <BiShuffle className="music-player-song-shuffle" />
+        <BiShuffle className="mr-4 ml-4 min-w-[1rem] text-2xl cursor-pointer hover:text-white" />
       </div>
       <div onClick={() => audioButton("loop")}>
         {loopState == "none" ? (
-          <PiRepeatFill className="music-player-song-loop" />
+          <PiRepeatFill className="mr-4 min-w-[1rem] text-2xl cursor-pointer hover:text-white" />
         ) : loopState == "song" ? (
-          <PiRepeatOnceDuotone className="music-player-song-loop" />
+          <PiRepeatOnceDuotone className="mr-4 min-w-[1rem] text-2xl cursor-pointer hover:text-white" />
         ) : (
-          <PiRepeatDuotone className="music-player-song-loop" />
+          <PiRepeatDuotone className="mr-4 min-w-[1rem] text-2xl cursor-pointer hover:text-white" />
         )}
       </div>
     </div>

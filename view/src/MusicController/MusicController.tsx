@@ -5,7 +5,6 @@ import { PlayingNow } from "./PlayingNow";
 import { Queue } from "./Queue";
 import { Search } from "./Search";
 import { VoiceChannels } from "./VoiceChannels";
-import "./mc-styles.css";
 
 interface MusicControllerProps {
   currentGuild: Guild | null;
