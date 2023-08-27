@@ -9,3 +9,15 @@ body {
 input {
   all: unset;
 }
+
+input::-webkit-slider-thumb {
+  opacity: 0;
+}
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+::-webkit-scrollbar-thumb {
+  background: #001a23;
+  border-radius: 10px;
+}

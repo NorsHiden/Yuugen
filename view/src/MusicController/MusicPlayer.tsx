@@ -115,18 +115,18 @@ export const MusicPlayer = ({
           <BiSkipNext className="mr-2 text-2xl cursor-pointer hover:text-white" />
         </div>
       </div>
-      <div className="flex items-center h-2 w-full rounded-xl">
+      <div className="group flex relative items-center h-2 w-full rounded-xl">
         <input
           type="range"
           min="0"
           max={currentIndex > -1 ? queue[currentIndex].duration : "0"}
-          step="1"
           value={currentIndex > -1 ? seek / 1000 : "0"}
           onChange={(e) => changeSeek(e.target.value)}
-          className="mr-2 w-full h-2 cursor-pointer transition-all duration-200 bg-[#003344] rounded-lg hover:h-4"
+          className="mr-2 w-full h-2 cursor-pointer transition-all duration-200 bg-[#003344] rounded-lg group-hover:h-4"
         />
         <div
-          className={`flex absolute left-auto pointer-events-none h-2 w-[${progressBarStyle()}] bg-[#d4a88b] rounded-lg`}
+          className={`flex absolute left-auto pointer-events-none h-2 min-w-[0.3rem] bg-[#d4a88b] rounded-lg transition-all duration-200 group-hover:h-4`}
+          style={{ width: progressBarStyle() }}
         ></div>
       </div>
       <div className="text-xs font-bold mr-4 ml-2">
@@ -134,7 +134,7 @@ export const MusicPlayer = ({
       </div>
       <div className="flex flex-row items-center ml-auto">
         <BiSolidVolumeFull className="mr-2 text-lg cursor-pointer ml-auto hover:text-white" />
-        <div className="flex items-center w-24 h-2 rounded-xl">
+        <div className="group flex relative items-center w-24 h-2 rounded-xl">
           <input
             type="range"
             min="0"
@@ -142,10 +142,11 @@ export const MusicPlayer = ({
             step="1"
             value={volume}
             onChange={(e) => changeVolume(e.target.value)}
-            className="mr-2 w-full h-2 cursor-pointer transition-all duration-200 bg-[#003344] rounded-lg hover:h-4"
+            className="mr-2 w-24 h-2 cursor-pointer bg-[#003344] rounded-lg group-hover:h-4 transition-all duration-200"
           />
           <div
-            className={`flex absolute left-auto pointer-events-none h-2 w-[${volume}] bg-[#d4a88b] rounded-lg`}
+            className={`flex absolute left-auto pointer-events-none h-2 bg-[#d4a88b] rounded-lg group-hover:h-4 transition-all duration-200`}
+            style={{ width: `${volume}%` }}
           ></div>
         </div>
       </div>

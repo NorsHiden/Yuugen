@@ -147,7 +147,9 @@ export const Queue = ({
 }: QueueProps) => {
   return (
     <div className="flex flex-col items-center w-full pt-2 font-sans text-[#a4a4a4]">
-      <div className="mt-4 w-full text-2xl font-extrabold">Queue</div>
+      <div className="mt-4 w-full text-2xl text-white font-extrabold">
+        Queue
+      </div>
       <div className="flex flex-col items-center w-[95%] pt-6">
         {queue.map((song, index) => (
           <QueueItem
