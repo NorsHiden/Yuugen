@@ -47,10 +47,10 @@ export const MusicController = ({ currentGuild }: MusicControllerProps) => {
     setEvent(newEvent);
   }, [currentGuild]);
   return (
-    <div className="music-controller-container">
-      <div className="music-controller">
-        <div className="music-controller-horizontal-split">
-          <div className="music-controller-vertical-split">
+    <div className="flex flex-col h-[calc(100vh-3.2rem)]">
+      <div className="flex flex-row h-full w-full overflow-y-auto overflow-x-hidden">
+        <div className="flex flex-col h-full w-full">
+          <div className="flex flex-row h-60 w-full">
             <PlayingNow queue={queue} currentIndex={currentIndex} />
             <VoiceChannels
               currentGuild={currentGuild}
@@ -64,7 +64,7 @@ export const MusicController = ({ currentGuild }: MusicControllerProps) => {
             currentIndex={currentIndex}
             currentState={currentState}
           />
-          <div className="musicplayer-placeholder"></div>
+          <div className="w-full min-h-[7rem]"></div>
         </div>
         <Search currentGuild={currentGuild} queue={queue} />
       </div>

@@ -25,16 +25,19 @@ const VoiceChannelItem = ({
   };
 
   const regularChannel = (
-    <div className="music-channel-item" onClick={joinChannel}>
+    <div
+      className="flex min-h-[2.2rem] items-center rounded-lg pl-2 cursor-pointer text-[#a4a4a4] hover:bg-gradient-to-r hover:from-yuugenColorSecond hover:to-transparent hover:text-white"
+      onClick={joinChannel}
+    >
       <BiVolumeFull size="24" />
       <div className="music-channel-item-name">{channel.name}</div>
     </div>
   );
   const activeChannel = (
-    <div className="music-channel-item-active">
+    <div className="flex min-h-[2.2rem] items-center rounded-lg pl-2 cursor-pointer text-yuugenColorFirst bg-yuugenColorSecond">
       <BiVolumeFull size="24" color="" />
-      <div className="music-channel-item-name">{channel.name}</div>
-      <div className="music-channel-item-disconnect-btn" onClick={leaveChannel}>
+      <div className="ml-4">{channel.name}</div>
+      <div onClick={leaveChannel} className="ml-auto mr-4">
         <BsFillTelephoneXFill size="12" />
       </div>
     </div>
@@ -58,9 +61,9 @@ export const VoiceChannels = ({
   currentVoiceChannel,
 }: VoiceChannelsProps) => {
   return (
-    <div className="music-channels">
-      <div className="music-header">Voice Channels</div>
-      <div className="music-channel-list">
+    <div className="flex flex-col h-60 w-full font-sans text-white mt-2 mr-4 ml-4">
+      <div className="mt-4 w-full text-2xl font-extrabold">Voice Channels</div>
+      <div className="flex flex-col h-full w-full pt-2 text-xs overflow-y-hidden hover:overflow-y-auto">
         {currentGuild ? (
           voiceChannels.map((channel) => (
             <VoiceChannelItem
@@ -71,7 +74,9 @@ export const VoiceChannels = ({
             />
           ))
         ) : (
-          <div className="music-channel-skeleton">Loading...</div>
+          <div className="flex min-h-[2rem] items-center rounded-lg pl-2 cursor-pointer text-[#a4a4a4] bg-gradient-to-r from-yuugenColorSecond to-transparent">
+            Loading...
+          </div>
         )}
       </div>
     </div>

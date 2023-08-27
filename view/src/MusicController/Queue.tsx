@@ -138,7 +138,7 @@ export const Queue = ({
 }: QueueProps) => {
   return (
     <div className="music-queue">
-      <div className="music-header">Queue</div>
+      <div className="mt-4 w-full text-2xl font-extrabold">Queue</div>
       <div className="music-queue-list">
         {queue.map((song, index) => (
           <QueueItem

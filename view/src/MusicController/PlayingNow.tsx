@@ -11,24 +11,24 @@ export const PlayingNow = ({ queue, currentIndex }: PlayingNowProps) => {
 
   return (
     <div
-      className="music-playing-now"
+      className="flex flex-col h-full min-w-[27rem] bg-cover bg-center bg-no-repeat rounded-e-2xl mt-2 mr-4 ml-4"
       style={{
         backgroundImage: `url(${
           currentIndex > -1 ? queue[currentIndex].thumbnail : defaultImg
         })`,
       }}
     >
-      <div className="music-playing-now-grad">
-        <div className="music-header">
+      <div className="h-full w-full bg-gradient-to-r from-yuugenBackgroundColor to-transparent font-sans text-white">
+        <div className="mt-4 w-full text-2xl font-extrabold">
           {currentIndex > -1 ? "Playing Now" : "Nothing is Playing"}
         </div>
-        <div className="music-playing-now-author">
+        <div className="mt-8 text-sm font-light">
           {currentIndex > -1 ? queue[currentIndex].author : ""}
         </div>
-        <div className="music-playing-now-title">
+        <div className="text-xl font-bold w-[90%] h-24 overflow-hidden text-ellipsis">
           {currentIndex > -1 ? queue[currentIndex].title : ""}
         </div>
-        <div className="music-playing-now-requestedby">
+        <div className="mt-4 text-xs font-medium">
           {" "}
           {currentIndex > -1
             ? `Requested By ${queue[currentIndex].requester_name}`

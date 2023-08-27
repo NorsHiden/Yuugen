@@ -60,9 +60,10 @@ export const Menu = ({ guildsState, currentGuildState }: MenuProps) => {
   }, []);
 
   return (
-    <div className="flex flex-row items-center min-h-[2rem] pt-1">
+    <div className="flex flex-row items-center min-h-[2rem]">
       <div
-        className="group flex absolute flex-col text-xs text-[#d3a78a] bg-yuugenBackgroundColor font-sans border-solid border-[1px] rounded-2xl w-52 max-h-7 min-h-7 top-3 duration-200 border-yuugenColorFirst focus:max-h-40 focus:rounded-b-md focus:rounded-t-2xl"
+        className="group flex absolute flex-col text-xs text-[#d3a78a] bg-yuugenBackgroundColor font-sans border-solid rounded-2xl border-[1px] w-52 max-h-7 min-h-7 top-3 duration-200 border-yuugenColorFirst
+                  focus:max-h-40 focus:rounded-b-md focus:rounded-t-2xl"
         tabIndex={0}
       >
         <div className="flex flex-row items-center min-h-[1.7rem] min-w-full cursor-pointer">
