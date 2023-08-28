@@ -41,10 +41,12 @@ export class VoiceService {
     return { message: 'Left voice channel', statusCode: 200 };
   }
 
-  async searchYoutube(prompt: string) {
+  async searchYoutube(prompt: string, type: string) {
+    if (!prompt) throw new NotFoundException('Prompt not found');
+    if (type !== 'video' && type !== 'playlist')
+      throw new NotFoundException('Type not found');
     const results = await player.search(prompt, {
-      source: { youtube: 'video' },
-      limit: 15,
+      source: { youtube: type },
     });
     return results;
   }
@@ -70,6 +72,32 @@ export class VoiceService {
     });
     this.guildConnectionService.set(guildId, connection);
     return { message: 'Added song to queue', statusCode: 200 };
+  }
+
+  async addPlaylist(id: string, guildId: string, url: string) {
+    const guild = this.client.guilds.cache.get(guildId);
+    if (!guild) throw new NotFoundException('Guild not found');
+    const connection = this.guildConnectionService.get(guildId);
+    if (!connection) throw new NotFoundException('Connection not found');
+    const songs = await (await player.playlist_info(url)).all_videos();
+    const requester = await this.userService.getMe(id);
+    songs.forEach(async (song) => {
+      const [research] = await player.search(song.url, {
+        source: { youtube: 'video' },
+      });
+      connection.queue.push({
+        title: song.title,
+        author: song.channel.name,
+        url: song.url,
+        thumbnail: research.thumbnails[0].url,
+        duration: song.durationInSec,
+        raw_duration: song.durationRaw,
+        requester_id: requester.id,
+        requester_name: requester.global_name,
+      });
+    });
+    this.guildConnectionService.set(guildId, connection);
+    return { message: 'Added playlist to queue', statusCode: 200 };
   }
 
   async removeSong(guildId: string, index: number) {

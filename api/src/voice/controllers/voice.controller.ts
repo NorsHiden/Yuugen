@@ -37,18 +37,25 @@ export class VoiceController {
   }
 
   @Get('yt-search')
-  async searchYoutube(@Query('prompt') prompt: string) {
+  async searchYoutube(
+    @Query('type') type: string,
+    @Query('prompt') prompt: string,
+  ) {
     if (!prompt) throw new NotFoundException('Prompt not found');
-    return await this.voiceService.searchYoutube(prompt);
+    return await this.voiceService.searchYoutube(prompt, type);
   }
 
   @Post('queue')
   async addSong(
     @Req() req: any,
     @Query('guildId') guildId: string,
+    @Query('type') type: string,
     @Query('url') url: string,
   ) {
-    return this.voiceService.addSong(req.user.id, guildId, url);
+    if (!url) throw new NotFoundException('Url not found');
+    if (type === 'video')
+      return this.voiceService.addSong(req.user.id, guildId, url);
+    return this.voiceService.addPlaylist(req.user.id, guildId, url);
   }
 
   @Delete('queue')

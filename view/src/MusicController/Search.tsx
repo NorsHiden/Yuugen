@@ -10,11 +10,14 @@ interface SearchItemProps {
   currentGuild: Guild;
   result: YouTubePlayList;
   queue: Song[];
+  type: "video" | "playlist";
 }
 
-const SearchItem = ({ currentGuild, result, queue }: SearchItemProps) => {
+const SearchItem = ({ currentGuild, result, queue, type }: SearchItemProps) => {
   const addSong = () => {
-    axios.post(`/api/voice/queue?guildId=${currentGuild.id}&url=${result.url}`);
+    axios.post(
+      `/api/voice/queue?guildId=${currentGuild.id}&type=${type}&url=${result.url}`
+    );
   };
   return (
     <div
@@ -50,6 +53,7 @@ interface SearchProps {
 export const Search = ({ currentGuild, queue }: SearchProps) => {
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 300);
+  const [searchType, setSearchType] = useState<"video" | "playlist">("video");
   const [searchResults, setSearchResults] = useState<YouTubePlayList[]>([]);
 
   useEffect(() => {
@@ -57,12 +61,14 @@ export const Search = ({ currentGuild, queue }: SearchProps) => {
       setSearchResults([]);
       return;
     }
-    axios.get(`/api/voice/yt-search?prompt=${debouncedSearch}`).then((res) => {
-      setSearchResults(res.data);
-    });
-  }, [debouncedSearch]);
+    axios
+      .get(`/api/voice/yt-search?type=${searchType}&prompt=${debouncedSearch}`)
+      .then((res) => {
+        setSearchResults(res.data);
+      });
+  }, [debouncedSearch, searchType]);
   return (
-    <div className="flex flex-col min-w-[22rem] h-[calc(100%-6rem)] font-sans text-white">
+    <div className="flex flex-col items-center min-w-[22rem] h-[calc(100%-6rem)] font-sans text-white">
       <div className="mt-4 w-full text-2xl font-extrabold">Search</div>
       <div
         tabIndex={2}
@@ -79,6 +85,36 @@ export const Search = ({ currentGuild, queue }: SearchProps) => {
           className="text-[#001a23] duration-200 group-focus-within:text-[#003344] group-focus-within:scale-110"
         />
       </div>
+      <div className="flex flex-row justify-center w-full pt-2 gap-4">
+        {searchType === "video" ? (
+          <div className="flex flex-col items-center font-bold cursor-pointer text-yuugenColorFirst">
+            <div>Single</div>
+            <div className="flex w-12 h-1 rounded-full transition-all durarion-200 bg-yuugenColorFirst"></div>
+          </div>
+        ) : (
+          <div
+            className="flex flex-col items-center font-semibold cursor-pointer transtion-all duration-200 hover:font-bold"
+            onClick={() => setSearchType("video")}
+          >
+            <div>Single</div>
+            <div className="w-0 h-1 rounded-full transition-all durarion-200 bg-yuugenColorFirst"></div>
+          </div>
+        )}
+        {searchType === "playlist" ? (
+          <div className="flex flex-col items-center font-bold cursor-pointer text-yuugenColorFirst">
+            <div>Playlist</div>
+            <div className="flex w-14 h-1 rounded-full transition-all durarion-200 bg-yuugenColorFirst"></div>
+          </div>
+        ) : (
+          <div
+            className="flex flex-col items-center font-semibold cursor-pointer transtion-all duration-200 hover:font-bold"
+            onClick={() => setSearchType("playlist")}
+          >
+            <div>Playlist</div>
+            <div className="w-0 h-1 rounded-full transition-all durarion-200 bg-yuugenColorFirst"></div>
+          </div>
+        )}
+      </div>
       <div className="flex flex-col w-full mt-3">
         {searchResults.map((result) => (
           <SearchItem
@@ -88,6 +124,7 @@ export const Search = ({ currentGuild, queue }: SearchProps) => {
             }
             result={result}
             queue={queue}
+            type={searchType}
           />
         ))}
         <div className="w-full min-h-[7rem]"></div>
