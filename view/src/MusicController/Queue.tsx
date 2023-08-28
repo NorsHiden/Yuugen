@@ -165,35 +165,33 @@ export const Queue = ({
           );
         }}
       >
-        <Droppable
-          droppableId="ROOT"
-          type="group"
-          className="flex flex-col items-center w-[95%] pt-6"
-        >
+        <Droppable droppableId="ROOT" type="group">
           {(provided: any) => (
-            <div
-              className="flex flex-col w-[95%]"
-              {...provided.droppableProps}
-              ref={provided.innerRef}
-            >
-              {queue.map((song, index) => (
-                <Draggable key={index} draggableId={`${index}`} index={index}>
-                  {(provided: any) => (
-                    <div {...provided.draggableProps} ref={provided.innerRef}>
-                      <QueueItem
-                        key={index}
-                        currentGuild={currentGuild}
-                        song={song}
-                        index={index}
-                        currentIndex={currentIndex}
-                        currentState={currentState}
-                        provided={provided}
-                      />
-                    </div>
-                  )}
-                </Draggable>
-              ))}
-              {provided.placeholder}
+            <div className="flex flex-col w-[95%] pt-6">
+              <div
+                className="flex flex-col w-full"
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {queue.map((song, index) => (
+                  <Draggable key={index} draggableId={`${index}`} index={index}>
+                    {(provided: any) => (
+                      <div {...provided.draggableProps} ref={provided.innerRef}>
+                        <QueueItem
+                          key={index}
+                          currentGuild={currentGuild}
+                          song={song}
+                          index={index}
+                          currentIndex={currentIndex}
+                          currentState={currentState}
+                          provided={provided}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
             </div>
           )}
         </Droppable>
