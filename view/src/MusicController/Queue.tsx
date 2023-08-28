@@ -5,6 +5,7 @@ import { MdDragHandle } from "react-icons/md";
 import { Guild, Song } from "../interfaces";
 import axios from "axios";
 import { useState } from "react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 interface QueueItemProps {
   currentGuild: Guild | null;
@@ -12,6 +13,7 @@ interface QueueItemProps {
   index: number;
   currentIndex: number;
   currentState: "playing" | "paused" | "idle";
+  provided: any;
 }
 
 const QueueItem = ({
@@ -20,6 +22,7 @@ const QueueItem = ({
   index,
   currentIndex,
   currentState,
+  provided,
 }: QueueItemProps) => {
   const [hovered, setHovered] = useState<boolean>(false);
   const removeFromQueue = () => {
@@ -124,10 +127,12 @@ const QueueItem = ({
         className="flex flex-row items-center ml-auto cursor-pointer hover:text-white"
         onClick={removeFromQueue}
       />
-      <MdDragHandle
-        size="20"
-        className="flex flex-row items-center ml-8 mr-4 cursor-grab hover:text-white active:cursor-grabbing"
-      />
+      <div {...provided.dragHandleProps}>
+        <MdDragHandle
+          size="20"
+          className="flex flex-row items-center ml-8 mr-4 cursor-grab hover:text-white active:cursor-grabbing"
+        />
+      </div>
     </div>
   );
 };
@@ -150,18 +155,49 @@ export const Queue = ({
       <div className="mt-4 w-full text-2xl text-white font-extrabold">
         Queue
       </div>
-      <div className="flex flex-col items-center w-[95%] pt-6">
-        {queue.map((song, index) => (
-          <QueueItem
-            key={index}
-            currentGuild={currentGuild}
-            song={song}
-            index={index}
-            currentIndex={currentIndex}
-            currentState={currentState}
-          />
-        ))}
-      </div>
+      <DragDropContext
+        onDragEnd={(result: any) => {
+          console.log(result);
+          if (!result.destination) return;
+          if (result.destination.index === result.source.index) return;
+          axios.post(
+            `/api/voice/move?guildId=${currentGuild?.id}&from=${result.source.index}&to=${result.destination.index}`
+          );
+        }}
+      >
+        <Droppable
+          droppableId="ROOT"
+          type="group"
+          className="flex flex-col items-center w-[95%] pt-6"
+        >
+          {(provided: any) => (
+            <div
+              className="flex flex-col w-[95%]"
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {queue.map((song, index) => (
+                <Draggable key={index} draggableId={`${index}`} index={index}>
+                  {(provided: any) => (
+                    <div {...provided.draggableProps} ref={provided.innerRef}>
+                      <QueueItem
+                        key={index}
+                        currentGuild={currentGuild}
+                        song={song}
+                        index={index}
+                        currentIndex={currentIndex}
+                        currentState={currentState}
+                        provided={provided}
+                      />
+                    </div>
+                  )}
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 };

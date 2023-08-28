@@ -115,6 +115,15 @@ export class VoiceController {
     return this.playerService.seek(guildId, +value);
   }
 
+  @Post('move')
+  async move(
+    @Query('guildId') guildId: string,
+    @Query('from') from: string,
+    @Query('to') to: string,
+  ) {
+    return this.voiceService.move(guildId, +from, +to);
+  }
+
   @Sse('updates')
   updates(@Query('guildId') guildId: string): Observable<MessageEvent> {
     return interval(1000).pipe(

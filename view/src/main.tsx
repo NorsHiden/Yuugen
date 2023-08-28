@@ -6,13 +6,11 @@ import "./index.css";
 import { SelectGuild } from "./SelectGuild/SelectGuild";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/Login" element={<LoginPage />} />
-        <Route path="selectGuild" element={<SelectGuild />} />
-        <Route path="/*" element={<App />} />
-      </Routes>
-    </BrowserRouter>
-  </>
+  <BrowserRouter>
+    <Routes>
+      <Route path="/Login" element={<LoginPage />} />
+      <Route path="selectGuild" element={<SelectGuild />} />
+      <Route path="/*" element={<App />} />
+    </Routes>
+  </BrowserRouter>
 );

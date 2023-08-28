@@ -88,6 +88,29 @@ export class VoiceService {
     return { message: 'Removed song from queue', statusCode: 200 };
   }
 
+  async move(guildId: string, oldIndex: number, newIndex: number) {
+    const guild = this.client.guilds.cache.get(guildId);
+    if (!guild) throw new NotFoundException('Guild not found');
+    const connection = this.guildConnectionService.get(guildId);
+    if (!connection) throw new NotFoundException('Connection not found');
+    if (oldIndex == connection.currentIndex) {
+      connection.currentIndex = newIndex;
+    } else if (
+      oldIndex < connection.currentIndex &&
+      newIndex >= connection.currentIndex
+    )
+      connection.currentIndex--;
+    else if (
+      oldIndex > connection.currentIndex &&
+      newIndex <= connection.currentIndex
+    )
+      connection.currentIndex++;
+    const [song] = connection.queue.splice(oldIndex, 1);
+    connection.queue.splice(newIndex, 0, song);
+    this.guildConnectionService.set(guildId, connection);
+    return { message: 'Moved song in queue', statusCode: 200 };
+  }
+
   getUpdates(guildId: string) {
     const guild = this.client.guilds.cache.get(guildId);
     if (!guild) throw new NotFoundException('Guild not found');
