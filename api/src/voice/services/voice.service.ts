@@ -48,6 +48,10 @@ export class VoiceService {
     const results = await player.search(prompt, {
       source: { youtube: type },
     });
+    if (!results.length && type === 'playlist') {
+      const playlist = await player.playlist_info(prompt);
+      return [playlist];
+    }
     return results;
   }
 
@@ -137,6 +141,16 @@ export class VoiceService {
     connection.queue.splice(newIndex, 0, song);
     this.guildConnectionService.set(guildId, connection);
     return { message: 'Moved song in queue', statusCode: 200 };
+  }
+
+  clearQueue(guildId: string) {
+    const guild = this.client.guilds.cache.get(guildId);
+    if (!guild) throw new NotFoundException('Guild not found');
+    const connection = this.guildConnectionService.get(guildId);
+    if (!connection) throw new NotFoundException('Connection not found');
+    connection.queue.splice(0, connection.queue.length);
+    this.guildConnectionService.set(guildId, connection);
+    return { message: 'Cleared queue', statusCode: 200 };
   }
 
   getUpdates(guildId: string) {

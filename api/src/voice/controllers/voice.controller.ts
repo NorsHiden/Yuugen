@@ -131,6 +131,11 @@ export class VoiceController {
     return this.voiceService.move(guildId, +from, +to);
   }
 
+  @Delete('clear')
+  clear(@Query('guildId') guildId: string) {
+    return this.voiceService.clearQueue(guildId);
+  }
+
   @Sse('updates')
   updates(@Query('guildId') guildId: string): Observable<MessageEvent> {
     return interval(1000).pipe(

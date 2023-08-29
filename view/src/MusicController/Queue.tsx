@@ -1,6 +1,7 @@
 import { BiLogoYoutube, BiTime, BiTrash, BiUserCircle } from "react-icons/bi";
 import { BsFillPlayCircleFill, BsFillStopCircleFill } from "react-icons/bs";
 import { PiWaveformBold } from "react-icons/pi";
+import { AiOutlineClear } from "react-icons/ai";
 import { MdDragHandle } from "react-icons/md";
 import { Guild, Song } from "../interfaces";
 import axios from "axios";
@@ -150,10 +151,20 @@ export const Queue = ({
   currentIndex,
   currentState,
 }: QueueProps) => {
+  const clearQueue = () => {
+    axios.delete(`/api/voice/clear?guildId=${currentGuild?.id}`);
+  };
+
   return (
     <div className="flex flex-col items-center w-full pt-2 font-sans text-[#a4a4a4]">
-      <div className="mt-4 w-full text-2xl text-white font-extrabold">
-        Queue
+      <div className="flex flex-row items-center mt-4 w-full text-2xl text-white font-extrabold ">
+        <div>Queue</div>
+        <div
+          className="flex items-center justify-center rounded-full ml-auto mr-2 h-8 w-8 text-yuugenColorSecond cursor-pointer transition-all duration-200 hover:bg-yuugenColorSecond hover:text-yuugenColorFirst"
+          onClick={clearQueue}
+        >
+          <AiOutlineClear />
+        </div>
       </div>
       <DragDropContext
         onDragEnd={(result: any) => {
