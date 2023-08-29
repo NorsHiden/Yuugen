@@ -4,6 +4,7 @@ import { ChannelType, Client } from 'discord.js';
 import { GuildConnectionService } from './guild-connection.service';
 import player from 'play-dl';
 import { UserService } from 'src/user/services/user.service';
+import axios from 'axios';
 
 @Injectable()
 export class VoiceService {
@@ -60,17 +61,23 @@ export class VoiceService {
     if (!guild) throw new NotFoundException('Guild not found');
     const connection = this.guildConnectionService.get(guildId);
     if (!connection) throw new NotFoundException('Connection not found');
-    const [song] = await player.search(url, {
-      source: { youtube: 'video' },
-    });
+    const song = await player.video_info(url);
+    let thumbnail = song.video_details.thumbnails[0].url
+      .split('?')[0]
+      .replace('hqdefault', 'maxresdefault');
+    try {
+      await axios.get(thumbnail);
+    } catch {
+      thumbnail = song.video_details.thumbnails[0].url;
+    }
     const requester = await this.userService.getMe(id);
     connection.queue.push({
-      title: song.title,
-      author: song.channel.name,
-      url: song.url,
-      thumbnail: song.thumbnails[0].url,
-      duration: song.durationInSec,
-      raw_duration: song.durationRaw,
+      title: song.video_details.title,
+      author: song.video_details.channel.name,
+      url: song.video_details.url,
+      thumbnail: thumbnail,
+      duration: song.video_details.durationInSec,
+      raw_duration: song.video_details.durationRaw,
       requester_id: requester.id,
       requester_name: requester.global_name,
     });
@@ -148,7 +155,10 @@ export class VoiceService {
     if (!guild) throw new NotFoundException('Guild not found');
     const connection = this.guildConnectionService.get(guildId);
     if (!connection) throw new NotFoundException('Connection not found');
-    connection.queue.splice(0, connection.queue.length);
+    connection.queue = [];
+    connection.currentIndex = -1;
+    connection.player.pause();
+    connection.state = 'idle';
     this.guildConnectionService.set(guildId, connection);
     return { message: 'Cleared queue', statusCode: 200 };
   }
