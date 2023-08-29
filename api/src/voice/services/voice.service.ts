@@ -92,16 +92,21 @@ export class VoiceService {
     if (!connection) throw new NotFoundException('Connection not found');
     try {
       const songs = (await player.playlist_info(url)).page(1);
-      console.log('i see you got that amount of songs: ' + songs.length);
       const requester = await this.userService.getMe(id);
       songs.forEach(async (song) => {
+        let thumbnail = song.thumbnails[0].url
+          .split('?')[0]
+          .replace('hqdefault', 'maxresdefault');
+        try {
+          await axios.get(thumbnail);
+        } catch {
+          thumbnail = song.thumbnails[0].url.split('?')[0];
+        }
         connection.queue.push({
           title: song.title,
           author: song.channel.name,
           url: song.url,
-          thumbnail: song.thumbnails[0].url
-            .split('?')[0]
-            .replace('hqdefault', 'maxresdefault'),
+          thumbnail: thumbnail,
           duration: song.durationInSec,
           raw_duration: song.durationRaw,
           requester_id: requester.id,
