@@ -90,25 +90,30 @@ export class VoiceService {
     if (!guild) throw new NotFoundException('Guild not found');
     const connection = this.guildConnectionService.get(guildId);
     if (!connection) throw new NotFoundException('Connection not found');
-    const songs = await (await player.playlist_info(url)).all_videos();
-    const requester = await this.userService.getMe(id);
-    songs.forEach(async (song) => {
-      const [research] = await player.search(song.url, {
-        source: { youtube: 'video' },
+    try {
+      const songs = (await player.playlist_info(url)).page(1);
+      console.log('i see you got that amount of songs: ' + songs.length);
+      const requester = await this.userService.getMe(id);
+      songs.forEach(async (song) => {
+        connection.queue.push({
+          title: song.title,
+          author: song.channel.name,
+          url: song.url,
+          thumbnail: song.thumbnails[0].url
+            .split('?')[0]
+            .replace('hqdefault', 'maxresdefault'),
+          duration: song.durationInSec,
+          raw_duration: song.durationRaw,
+          requester_id: requester.id,
+          requester_name: requester.global_name,
+        });
       });
-      connection.queue.push({
-        title: song.title,
-        author: song.channel.name,
-        url: song.url,
-        thumbnail: research.thumbnails[0].url,
-        duration: song.durationInSec,
-        raw_duration: song.durationRaw,
-        requester_id: requester.id,
-        requester_name: requester.global_name,
-      });
-    });
-    this.guildConnectionService.set(guildId, connection);
-    return { message: 'Added playlist to queue', statusCode: 200 };
+      this.guildConnectionService.set(guildId, connection);
+      return { message: 'Added playlist to queue', statusCode: 200 };
+    } catch (e) {
+      console.log(e);
+      return { message: 'Error adding playlist to queue', statusCode: 500 };
+    }
   }
 
   async removeSong(guildId: string, index: number) {
