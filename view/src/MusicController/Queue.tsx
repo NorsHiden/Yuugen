@@ -145,6 +145,63 @@ interface QueueProps {
   currentState: "playing" | "paused" | "idle";
 }
 
+const LoadedQueue = ({
+  currentGuild,
+  queue,
+  currentIndex,
+  currentState,
+}: QueueProps) => {
+  return (
+    <DragDropContext
+      onDragEnd={(result: any) => {
+        console.log(result);
+        if (!result.destination) return;
+        if (result.destination.index === result.source.index) return;
+        axios.post(
+          `/api/voice/move?guildId=${currentGuild?.id}&from=${result.source.index}&to=${result.destination.index}`
+        );
+      }}
+    >
+      <Droppable droppableId="ROOT" type="group">
+        {(provided: any) => (
+          <div className="flex flex-col w-[95%] pt-6">
+            <div
+              className="flex flex-col w-full"
+              {...provided.droppableProps}
+              ref={provided.innerRef}
+            >
+              {queue.length > 0 ? (
+                queue.map((song, index) => (
+                  <Draggable key={index} draggableId={`${index}`} index={index}>
+                    {(provided: any) => (
+                      <div {...provided.draggableProps} ref={provided.innerRef}>
+                        <QueueItem
+                          key={index}
+                          currentGuild={currentGuild}
+                          song={song}
+                          index={index}
+                          currentIndex={currentIndex}
+                          currentState={currentState}
+                          provided={provided}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))
+              ) : (
+                <div className="flex justify-center font-bold text-xl text-yuugenColorSecond">
+                  Empty
+                </div>
+              )}
+              {provided.placeholder}
+            </div>
+          </div>
+        )}
+      </Droppable>
+    </DragDropContext>
+  );
+};
+
 export const Queue = ({
   currentGuild,
   queue,
@@ -166,47 +223,36 @@ export const Queue = ({
           <AiOutlineClear />
         </div>
       </div>
-      <DragDropContext
-        onDragEnd={(result: any) => {
-          console.log(result);
-          if (!result.destination) return;
-          if (result.destination.index === result.source.index) return;
-          axios.post(
-            `/api/voice/move?guildId=${currentGuild?.id}&from=${result.source.index}&to=${result.destination.index}`
-          );
-        }}
-      >
-        <Droppable droppableId="ROOT" type="group">
-          {(provided: any) => (
-            <div className="flex flex-col w-[95%] pt-6">
-              <div
-                className="flex flex-col w-full"
-                {...provided.droppableProps}
-                ref={provided.innerRef}
-              >
-                {queue.map((song, index) => (
-                  <Draggable key={index} draggableId={`${index}`} index={index}>
-                    {(provided: any) => (
-                      <div {...provided.draggableProps} ref={provided.innerRef}>
-                        <QueueItem
-                          key={index}
-                          currentGuild={currentGuild}
-                          song={song}
-                          index={index}
-                          currentIndex={currentIndex}
-                          currentState={currentState}
-                          provided={provided}
-                        />
-                      </div>
-                    )}
-                  </Draggable>
-                ))}
-                {provided.placeholder}
-              </div>
+      {currentGuild ? (
+        <LoadedQueue
+          currentGuild={currentGuild}
+          queue={queue}
+          currentIndex={currentIndex}
+          currentState={currentState}
+        />
+      ) : (
+        [1, 2, 3, 4].map(() => (
+          <div className="flex flex-row items-center w-full min-h-[4rem] rounded-xl pl-2 animate-pulse">
+            <div className="flex items-center justify-center w-10 h-10 mr-2 font-bold rounded-2xl bg-yuugenColorSecond"></div>
+            <div className="h-12 w-12 object-cover rounded-xl bg-yuugenColorSecond" />
+            <div className="flex flex-col gap-2">
+              <div className="ml-4 text-xs font-semibold w-60 h-4 rounded-full bg-yuugenColorSecond"></div>
+              <div className="ml-4 text-[10px] font-light w-20 h-2 rounded-full bg-yuugenColorSecond"></div>
             </div>
-          )}
-        </Droppable>
-      </DragDropContext>
+            <div className="flex flex-row items-center ml-4 text-[10px] font-light">
+              <BiTime size="20" className="mr-2 text-yuugenColorSecond" />
+              <div className="w-20 text-xs bg-yuugenColorSecond"></div>
+            </div>
+            <div className="flex flex-row items-center ml-8 text-yuugenColorSecond">
+              <BiLogoYoutube size="20" />
+            </div>
+            <div className="flex flex-row items-center text-xs ml-20 text-yuugenColorSecond">
+              <BiUserCircle size="20" />
+              <div className="ml-2 text-[10px] font-light rounded-full w-16 h-2 bg-yuugenColorSecond"></div>
+            </div>
+          </div>
+        ))
+      )}
     </div>
   );
 };
