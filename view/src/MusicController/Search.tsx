@@ -45,6 +45,22 @@ const SearchItem = ({ currentGuild, result, queue, type }: SearchItemProps) => {
   );
 };
 
+const SearchSkeleton = () => {
+  return (
+    <div className="animate-pulse">
+      {[1, 2, 3, 4, 5, 6].map(() => (
+        <div className="group flex flex-row items-center min-h-[4rem] rounded-xl p-2 opacity-30">
+          <div className="h-14 w-14 object-cover rounded-xl bg-[#003344]" />
+          <div className="flex flex-col gap-2">
+            <div className="ml-2 text-xs font-medium w-[12rem] h-3 rounded-full bg-[#003344]"></div>
+            <div className="ml-2 text-[10px] font-light w-[6rem] h-2 rounded-full bg-[#003344]"></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 interface SearchProps {
   currentGuild: Guild | null;
   queue: Song[];
@@ -54,18 +70,19 @@ export const Search = ({ currentGuild, queue }: SearchProps) => {
   const [search, setSearch] = useState("");
   const [debouncedSearch] = useDebounce(search, 300);
   const [searchType, setSearchType] = useState<"video" | "playlist">("video");
+  const [loading, setLoading] = useState(false);
   const [searchResults, setSearchResults] = useState<YouTubePlayList[]>([]);
 
   useEffect(() => {
-    if (debouncedSearch === "") {
-      setSearchResults([]);
-      return;
-    }
+    setSearchResults([]);
+    if (debouncedSearch === "") return;
     axios
       .get(`/api/voice/yt-search?type=${searchType}&prompt=${debouncedSearch}`)
       .then((res) => {
         setSearchResults(res.data);
+        setLoading(false);
       });
+    setLoading(true);
   }, [debouncedSearch, searchType]);
   return (
     <div className="flex flex-col items-center min-w-[22rem] h-[calc(100%-6rem)] font-sans text-white">
@@ -116,17 +133,21 @@ export const Search = ({ currentGuild, queue }: SearchProps) => {
         )}
       </div>
       <div className="flex flex-col w-full mt-3">
-        {searchResults.map((result) => (
-          <SearchItem
-            key={result.id}
-            currentGuild={
-              currentGuild ? currentGuild : ({ id: "", name: "" } as Guild)
-            }
-            result={result}
-            queue={queue}
-            type={searchType}
-          />
-        ))}
+        {searchResults.length === 0 && loading ? (
+          <SearchSkeleton />
+        ) : (
+          searchResults.map((result) => (
+            <SearchItem
+              key={result.id}
+              currentGuild={
+                currentGuild ? currentGuild : ({ id: "", name: "" } as Guild)
+              }
+              result={result}
+              queue={queue}
+              type={searchType}
+            />
+          ))
+        )}
         <div className="w-full min-h-[7rem]"></div>
       </div>
     </div>

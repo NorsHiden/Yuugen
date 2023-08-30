@@ -88,11 +88,11 @@ const QueueItem = ({
           ? "flex flex-row items-center w-full min-h-[4rem] rounded-xl pl-2 duration-200 bg-[#003344] text-yuugenColorFirst"
           : "flex flex-row items-center w-full min-h-[4rem] rounded-xl pl-2 duration-200 opacity-80 hover:opacity-100 hover:bg-gradient-to-r hover:from-yuugenColorSecond to-transparent hover:scale-[101%]"
       }
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       <div
         className="flex items-center justify-center w-10 h-10 mr-2 font-bold rounded-2xl cursor-pointer duration-300 hover:bg-[#002330] hover:text-yuugenColorFirst hover:rounded-full"
-        onMouseEnter={() => setHovered(true)}
-        onMouseLeave={() => setHovered(false)}
         onClick={selectSong}
       >
         {PlaySongHover()}
@@ -202,6 +202,36 @@ const LoadedQueue = ({
   );
 };
 
+const QueueSkeleton = () => {
+  return (
+    <>
+      {[1, 2, 3, 4].map(() => (
+        <div className="w-full animate-pulse">
+          <div className="flex flex-row items-center w-full min-h-[4rem] rounded-xl pl-2 opacity-30">
+            <div className="flex items-center justify-center w-10 h-10 mr-2 font-bold rounded-2xl bg-yuugenColorSecond"></div>
+            <div className="h-12 w-12 object-cover rounded-xl bg-yuugenColorSecond" />
+            <div className="flex flex-col gap-2">
+              <div className="ml-4 text-xs font-semibold w-60 h-4 rounded-full bg-yuugenColorSecond"></div>
+              <div className="ml-4 text-[10px] font-light w-20 h-2 rounded-full bg-yuugenColorSecond"></div>
+            </div>
+            <div className="flex flex-row items-center ml-4 text-[10px] font-light">
+              <BiTime size="20" className="mr-2 text-yuugenColorSecond" />
+              <div className="w-20 text-xs bg-yuugenColorSecond"></div>
+            </div>
+            <div className="flex flex-row items-center ml-8 text-yuugenColorSecond">
+              <BiLogoYoutube size="20" />
+            </div>
+            <div className="flex flex-row items-center text-xs ml-20 text-yuugenColorSecond">
+              <BiUserCircle size="20" />
+              <div className="ml-2 text-[10px] font-light rounded-full w-16 h-2 bg-yuugenColorSecond"></div>
+            </div>
+          </div>
+        </div>
+      ))}
+    </>
+  );
+};
+
 export const Queue = ({
   currentGuild,
   queue,
@@ -231,27 +261,7 @@ export const Queue = ({
           currentState={currentState}
         />
       ) : (
-        [1, 2, 3, 4].map(() => (
-          <div className="flex flex-row items-center w-full min-h-[4rem] rounded-xl pl-2 animate-pulse">
-            <div className="flex items-center justify-center w-10 h-10 mr-2 font-bold rounded-2xl bg-yuugenColorSecond"></div>
-            <div className="h-12 w-12 object-cover rounded-xl bg-yuugenColorSecond" />
-            <div className="flex flex-col gap-2">
-              <div className="ml-4 text-xs font-semibold w-60 h-4 rounded-full bg-yuugenColorSecond"></div>
-              <div className="ml-4 text-[10px] font-light w-20 h-2 rounded-full bg-yuugenColorSecond"></div>
-            </div>
-            <div className="flex flex-row items-center ml-4 text-[10px] font-light">
-              <BiTime size="20" className="mr-2 text-yuugenColorSecond" />
-              <div className="w-20 text-xs bg-yuugenColorSecond"></div>
-            </div>
-            <div className="flex flex-row items-center ml-8 text-yuugenColorSecond">
-              <BiLogoYoutube size="20" />
-            </div>
-            <div className="flex flex-row items-center text-xs ml-20 text-yuugenColorSecond">
-              <BiUserCircle size="20" />
-              <div className="ml-2 text-[10px] font-light rounded-full w-16 h-2 bg-yuugenColorSecond"></div>
-            </div>
-          </div>
-        ))
+        <QueueSkeleton />
       )}
     </div>
   );

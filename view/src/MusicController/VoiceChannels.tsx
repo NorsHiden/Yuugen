@@ -2,6 +2,8 @@ import { BiVolumeFull } from "react-icons/bi";
 import { Channel, Guild } from "../interfaces";
 import axios from "axios";
 import { BsFillTelephoneXFill } from "react-icons/bs";
+import { VscLoading } from "react-icons/vsc";
+import { useState } from "react";
 
 interface VoiceChannelItemProps {
   currentGuild: Guild;
@@ -14,14 +16,26 @@ const VoiceChannelItem = ({
   channel,
   currentVoiceChannel,
 }: VoiceChannelItemProps) => {
+  const [joinLoading, setJoinLoading] = useState<string>("");
+  const [leaveLoading, setLeaveLoading] = useState<string>("");
   const joinChannel = () => {
-    axios.post(
-      `/api/voice/join?guildId=${currentGuild.id}&channelId=${channel.id}`
-    );
+    if (joinLoading === channel.id) return;
+    axios
+      .post(
+        `/api/voice/join?guildId=${currentGuild.id}&channelId=${channel.id}`
+      )
+      .then(() => {
+        setJoinLoading("");
+      });
+    setJoinLoading(channel.id);
   };
 
   const leaveChannel = () => {
-    axios.post(`/api/voice/leave?guildId=${currentGuild.id}`);
+    if (leaveLoading === channel.id) return;
+    axios.post(`/api/voice/leave?guildId=${currentGuild.id}`).then(() => {
+      setLeaveLoading("");
+    });
+    setLeaveLoading(channel.id);
   };
 
   const regularChannel = (
@@ -29,7 +43,12 @@ const VoiceChannelItem = ({
       className="flex min-h-[2.2rem] items-center rounded-lg pl-2 cursor-pointer text-[#a4a4a4] hover:bg-gradient-to-r hover:from-yuugenColorSecond hover:to-transparent hover:text-white"
       onClick={joinChannel}
     >
-      <BiVolumeFull size="24" />
+      {joinLoading === channel.id ? (
+        <VscLoading size="24" className="animate-spin" />
+      ) : (
+        <BiVolumeFull size="24" />
+      )}
+
       <div className="ml-4">{channel.name}</div>
     </div>
   );
@@ -38,7 +57,11 @@ const VoiceChannelItem = ({
       <BiVolumeFull size="24" />
       <div className="ml-4">{channel.name}</div>
       <div onClick={leaveChannel} className="ml-auto mr-4 hover:text-white">
-        <BsFillTelephoneXFill size="12" />
+        {leaveLoading === channel.id ? (
+          <VscLoading size="12" className="animate-spin" />
+        ) : (
+          <BsFillTelephoneXFill size="12" />
+        )}
       </div>
     </div>
   );
@@ -74,9 +97,9 @@ export const VoiceChannels = ({
               />
             ))
           : [1, 2, 3, 4, 5].map(() => (
-              <div className="flex flex-row min-h-[2.2rem] items-center rounded-lg pl-2  animate-pulse">
-                <div className="flex items-center h-6 w-6 bg-[#001921] rounded-full"></div>
-                <div className="w-32 h-3 ml-4 bg-[#001921] rounded-md"></div>
+              <div className="flex flex-row min-h-[2.2rem] items-center rounded-lg pl-2 animate-pulse">
+                <div className="flex items-center h-6 w-6 bg-[#001921] rounded-full opacity-30"></div>
+                <div className="w-32 h-3 ml-4 bg-[#001921] rounded-md opacity-30"></div>
               </div>
             ))}
       </div>
