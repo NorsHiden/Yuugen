@@ -19,7 +19,7 @@ export class PlayerService {
     this.client.guilds.cache.forEach(async (guild) => {
       this.guildConnectionService
         .get(guild.id)
-        .player.on('stateChange', (oldState, newState) => {
+        .player.on('stateChange', async (oldState, newState) => {
           const currentGuild = this.guildConnectionService.get(guild.id);
           if (newState.status === 'idle' && currentGuild.state == 'playing') {
             if (
@@ -29,7 +29,7 @@ export class PlayerService {
               return this.stop(guild.id);
             else if (currentGuild.loopState == 'song')
               return this.playIndex(guild.id, currentGuild.currentIndex);
-            this.skip(guild.id);
+            await this.skip(guild.id);
           }
         });
     });
@@ -80,17 +80,12 @@ export class PlayerService {
   }
 
   async playAt(guildId: string, time: number) {
-    if (time < 0)
-      throw new BadRequestException('Time must be greater than 0 seconds');
     const guild = this.client.guilds.cache.get(guildId);
     if (!guild) throw new NotFoundException('Guild not found');
     const connection = this.guildConnectionService.get(guildId);
     if (!connection) throw new NotFoundException('Connection not found');
-    if (connection.state === 'paused') {
-      connection.player.unpause();
-      connection.state = 'playing';
-      return { message: 'Playing song', statusCode: 200 };
-    }
+    if (time < 0 || time > connection.queue[connection.currentIndex].duration)
+      throw new BadRequestException('Time must be greater than 0 seconds');
     const stream = await player.stream(
       connection.queue[connection.currentIndex].url,
       {
@@ -132,7 +127,7 @@ export class PlayerService {
     else return;
     connection.state = 'idle';
     this.guildConnectionService.set(guildId, connection);
-    this.play(guildId);
+    await this.play(guildId);
     return { message: 'Previous song', statusCode: 200 };
   }
 
@@ -147,7 +142,7 @@ export class PlayerService {
     else return;
     connection.state = 'idle';
     this.guildConnectionService.set(guildId, connection);
-    this.play(guildId);
+    await this.play(guildId);
     return { message: 'Skipped song', statusCode: 200 };
   }
 
@@ -171,6 +166,7 @@ export class PlayerService {
     connection.player.stop();
     connection.state = 'idle';
     connection.currentIndex = -1;
+    connection.seek = 0;
     this.guildConnectionService.set(guildId, connection);
     return { message: 'Stopped song', statusCode: 200 };
   }
@@ -219,8 +215,7 @@ export class PlayerService {
     const guild = this.client.guilds.cache.get(guildId);
     if (!guild) throw new NotFoundException('Guild not found');
     const connection = this.guildConnectionService.get(guildId);
-    this.playAt(guildId, value);
-    connection.seek = value;
+    await this.playAt(guildId, value);
     this.guildConnectionService.set(guildId, connection);
     return { message: 'Set volume', statusCode: 200 };
   }

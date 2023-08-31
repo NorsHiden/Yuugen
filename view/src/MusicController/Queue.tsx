@@ -1,12 +1,13 @@
 import { BiLogoYoutube, BiTime, BiTrash, BiUserCircle } from "react-icons/bi";
 import { BsFillPlayCircleFill, BsFillStopCircleFill } from "react-icons/bs";
 import { PiWaveformBold } from "react-icons/pi";
-import { AiOutlineClear } from "react-icons/ai";
+import { AiOutlineClear, AiOutlineLoading3Quarters } from "react-icons/ai";
 import { MdDragHandle } from "react-icons/md";
 import { Guild, Song } from "../interfaces";
 import axios from "axios";
 import { useState } from "react";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import { VscLoading } from "react-icons/vsc";
 
 interface QueueItemProps {
   currentGuild: Guild | null;
@@ -26,24 +27,44 @@ const QueueItem = ({
   provided,
 }: QueueItemProps) => {
   const [hovered, setHovered] = useState<boolean>(false);
+  const [removeLoading, setRemoveLoading] = useState<boolean>(false);
+  const [playLoading, setPlayLoading] = useState<boolean>(false);
   const removeFromQueue = () => {
-    axios.delete(`/api/voice/queue?guildId=${currentGuild?.id}&index=${index}`);
+    axios
+      .delete(`/api/voice/queue?guildId=${currentGuild?.id}&index=${index}`)
+      .then(() => {
+        setRemoveLoading(false);
+      });
+    setRemoveLoading(true);
   };
 
   const selectSong = () => {
     if (index === currentIndex) {
       if (currentState == "playing")
-        axios.post(`/api/voice/stop?guildId=${currentGuild?.id}`);
+        axios.post(`/api/voice/stop?guildId=${currentGuild?.id}`).then(() => {
+          setPlayLoading(false);
+        });
       else if (currentState == "paused")
-        axios.post(`/api/voice/play?guildId=${currentGuild?.id}`);
+        axios.post(`/api/voice/play?guildId=${currentGuild?.id}`).then(() => {
+          setPlayLoading(false);
+        });
       else
-        axios.post(
-          `/api/voice/play-index?guildId=${currentGuild?.id}&index=${index}`
-        );
+        axios
+          .post(
+            `/api/voice/play-index?guildId=${currentGuild?.id}&index=${index}`
+          )
+          .then(() => {
+            setPlayLoading(false);
+          });
     } else
-      axios.post(
-        `/api/voice/play-index?guildId=${currentGuild?.id}&index=${index}`
-      );
+      axios
+        .post(
+          `/api/voice/play-index?guildId=${currentGuild?.id}&index=${index}`
+        )
+        .then(() => {
+          setPlayLoading(false);
+        });
+    setPlayLoading(true);
   };
 
   const PlaySongHover = () => {
@@ -88,6 +109,9 @@ const QueueItem = ({
           ? "flex flex-row items-center w-full min-h-[4rem] rounded-xl pl-2 duration-200 bg-[#003344] text-yuugenColorFirst"
           : "flex flex-row items-center w-full min-h-[4rem] rounded-xl pl-2 duration-200 opacity-80 hover:opacity-100 hover:bg-gradient-to-r hover:from-yuugenColorSecond to-transparent hover:scale-[101%]"
       }
+      style={{
+        opacity: removeLoading ? 0.5 : 1,
+      }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -95,7 +119,11 @@ const QueueItem = ({
         className="flex items-center justify-center w-10 h-10 mr-2 font-bold rounded-2xl cursor-pointer duration-300 hover:bg-[#002330] hover:text-yuugenColorFirst hover:rounded-full"
         onClick={selectSong}
       >
-        {PlaySongHover()}
+        {playLoading ? (
+          <AiOutlineLoading3Quarters size="24" className="animate-spin" />
+        ) : (
+          <PlaySongHover />
+        )}
       </div>
       <img
         className="h-12 w-12 object-cover rounded-xl bg-[#a4a4a4]"
@@ -123,11 +151,16 @@ const QueueItem = ({
           {song.requester_name}
         </div>
       </div>
-      <BiTrash
-        size="20"
-        className="flex flex-row items-center ml-auto cursor-pointer hover:text-white"
-        onClick={removeFromQueue}
-      />
+      {removeLoading ? (
+        <VscLoading className="flex flex-row items-center ml-auto cursor-pointer hover:text-white animate-spin" />
+      ) : (
+        <BiTrash
+          size="20"
+          className="flex flex-row items-center ml-auto cursor-pointer hover:text-white"
+          onClick={removeFromQueue}
+        />
+      )}
+
       <div {...provided.dragHandleProps}>
         <MdDragHandle
           size="20"
@@ -151,22 +184,34 @@ const LoadedQueue = ({
   currentIndex,
   currentState,
 }: QueueProps) => {
+  const [moveLoading, setMoveLoading] = useState<boolean>(false);
+
   return (
     <DragDropContext
       onDragEnd={(result: any) => {
         console.log(result);
         if (!result.destination) return;
         if (result.destination.index === result.source.index) return;
-        axios.post(
-          `/api/voice/move?guildId=${currentGuild?.id}&from=${result.source.index}&to=${result.destination.index}`
-        );
+        axios
+          .post(
+            `/api/voice/move?guildId=${currentGuild?.id}&from=${result.source.index}&to=${result.destination.index}`
+          )
+          .then(() => {
+            setMoveLoading(false);
+          });
+        setMoveLoading(true);
       }}
     >
       <Droppable droppableId="ROOT" type="group">
         {(provided: any) => (
-          <div className="flex flex-col w-[95%] pt-6">
+          <div
+            className="flex flex-col w-[95%] pt-6"
+            style={{
+              opacity: moveLoading ? 0.5 : 1,
+            }}
+          >
             <div
-              className="flex flex-col w-full"
+              className="flex flex-col relative w-full"
               {...provided.droppableProps}
               ref={provided.innerRef}
             >
@@ -193,6 +238,11 @@ const LoadedQueue = ({
                   Empty
                 </div>
               )}
+              {moveLoading && (
+                <div className="flex absolute items-center justify-center w-full h-full">
+                  <VscLoading size="32" className="animate-spin" />
+                </div>
+              )}
               {provided.placeholder}
             </div>
           </div>
@@ -216,14 +266,14 @@ const QueueSkeleton = () => {
             </div>
             <div className="flex flex-row items-center ml-4 text-[10px] font-light">
               <BiTime size="20" className="mr-2 text-yuugenColorSecond" />
-              <div className="w-20 text-xs bg-yuugenColorSecond"></div>
+              <div className="w-16 h-2 rounded-full text-xs bg-yuugenColorSecond"></div>
             </div>
             <div className="flex flex-row items-center ml-8 text-yuugenColorSecond">
               <BiLogoYoutube size="20" />
             </div>
-            <div className="flex flex-row items-center text-xs ml-20 text-yuugenColorSecond">
+            <div className="flex flex-row items-center ml-20 text-yuugenColorSecond">
               <BiUserCircle size="20" />
-              <div className="ml-2 text-[10px] font-light rounded-full w-16 h-2 bg-yuugenColorSecond"></div>
+              <div className="ml-2 text-[10px] rounded-full w-16 h-2 bg-yuugenColorSecond"></div>
             </div>
           </div>
         </div>
@@ -244,7 +294,7 @@ export const Queue = ({
 
   return (
     <div className="flex flex-col items-center w-full pt-2 font-sans text-[#a4a4a4]">
-      <div className="flex flex-row items-center mt-4 w-full text-2xl text-white font-extrabold ">
+      <div className="flex flex-row items-center mt-4 w-full text-2xl text-white font-extrabold">
         <div>Queue</div>
         <div
           className="flex items-center justify-center rounded-full ml-auto mr-2 h-8 w-8 text-yuugenColorSecond cursor-pointer transition-all duration-200 hover:bg-yuugenColorSecond hover:text-yuugenColorFirst"

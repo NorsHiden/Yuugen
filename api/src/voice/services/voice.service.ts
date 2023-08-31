@@ -195,7 +195,7 @@ export class VoiceService {
       loopState: guildConnection.loopState,
       volume: guildConnection.volume,
       seek:
-        guildConnection.stream?.playbackDuration + guildConnection.seek * 1000,
+        guildConnection.stream?.playbackDuration / 1000 + guildConnection.seek,
     };
   }
 }

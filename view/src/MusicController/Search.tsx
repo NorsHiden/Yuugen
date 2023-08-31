@@ -1,10 +1,11 @@
 import axios from "axios";
 import { YouTubePlayList } from "play-dl";
 import { useEffect, useState } from "react";
-import { BiPlus, BiSearchAlt } from "react-icons/bi";
+import { BiSearchAlt } from "react-icons/bi";
 import { useDebounce } from "use-debounce";
 import { Guild, Song } from "../interfaces";
-import { MdLibraryAddCheck } from "react-icons/md";
+import { VscLoading } from "react-icons/vsc";
+import { MdPlaylistAdd, MdPlaylistAddCheck } from "react-icons/md";
 
 interface SearchItemProps {
   currentGuild: Guild;
@@ -14,14 +15,38 @@ interface SearchItemProps {
 }
 
 const SearchItem = ({ currentGuild, result, queue, type }: SearchItemProps) => {
+  const [loading, setLoading] = useState(false);
   const addSong = () => {
-    axios.post(
-      `/api/voice/queue?guildId=${currentGuild.id}&type=${type}&url=${result.url}`
+    axios
+      .post(
+        `/api/voice/queue?guildId=${currentGuild.id}&type=${type}&url=${result.url}`
+      )
+      .then(() => {
+        setLoading(false);
+      });
+    setLoading(true);
+  };
+
+  const IsLoaded = () => {
+    return (
+      <>
+        {queue.find((song) => song.url === result.url) ? (
+          <MdPlaylistAddCheck className="flex min-w-[1.5rem] min-h-[1.5rem] ml-auto mr-2" />
+        ) : (
+          <MdPlaylistAdd className="hidden min-w-[1.5rem] min-h-[1.5rem] ml-auto mr-2 group-hover:flex" />
+        )}
+      </>
     );
   };
   return (
     <div
       className="group flex flex-row items-center min-h-[4rem] rounded-xl p-2 cursor-pointer hover:bg-gradient-to-r from-yuugenColorSecond to-transparent hover:text-white "
+      style={{
+        opacity: loading ? 0.5 : 1,
+        color: queue.find((song) => song.url === result.url)
+          ? "#d3a78a"
+          : "white",
+      }}
       onClick={addSong}
     >
       <img
@@ -36,10 +61,12 @@ const SearchItem = ({ currentGuild, result, queue, type }: SearchItemProps) => {
           {result.channel?.name}
         </div>
       </div>
-      {queue.find((song) => song.url === result.url) ? (
-        <MdLibraryAddCheck className="flex min-w-[1.5rem] min-h-[1.5rem] ml-auto mr-2 text-[#003344]" />
+      {loading ? (
+        <div className="flex min-w-[1.5rem] min-h-[1.5rem] ml-auto mr-2">
+          <VscLoading className="flex min-w-[1.5rem] min-h-[1.5rem] ml-auto mr-2 animate-spin" />
+        </div>
       ) : (
-        <BiPlus className="hidden min-w-[1.5rem] min-h-[1.5rem] ml-auto mr-2 text-[#003344] group-hover:flex" />
+        <IsLoaded />
       )}
     </div>
   );
