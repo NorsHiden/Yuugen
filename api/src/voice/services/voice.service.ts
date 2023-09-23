@@ -91,7 +91,10 @@ export class VoiceService {
     const connection = this.guildConnectionService.get(guildId);
     if (!connection) throw new NotFoundException('Connection not found');
     try {
-      const songs = (await player.playlist_info(url)).page(1);
+      const pages = await player.playlist_info(url);
+      await pages.fetch();
+      const randomPage = Math.floor(Math.random() * pages.total_pages) + 1;
+      const songs = pages.page(randomPage);
       const requester = await this.userService.getMe(id);
       songs.forEach(async (song) => {
         let thumbnail = song.thumbnails[0].url
