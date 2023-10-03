@@ -2,11 +2,96 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+  font-family: "gilroy-black";
+  src: url("../public/assets/Gilroy-Black.ttf");
+}
+@font-face {
+  font-family: "gilroy-blackitalic";
+  src: url("../public/assets/Gilroy-BlackItalic.ttf");
+}
+@font-face {
+  font-family: "gilroy-bold";
+  src: url("../public/assets/Gilroy-Bold.ttf");
+}
+@font-face {
+  font-family: "gilroy-bolditalic";
+  src: url("../public/assets/Gilroy-BoldItalic.ttf");
+}
+@font-face {
+  font-family: "gilroy-extrabold";
+  src: url("../public/assets/Gilroy-ExtraBold.ttf");
+}
+@font-face {
+  font-family: "gilroy-extrabolditalic";
+  src: url("../public/assets/Gilroy-ExtraBoldItalic.ttf");
+}
+@font-face {
+  font-family: "gilroy-heavy";
+  src: url("../public/assets/Gilroy-Heavy.ttf");
+}
+@font-face {
+  font-family: "gilroy-heavyitalic";
+  src: url("../public/assets/Gilroy-HeavyItalic.ttf");
+}
+@font-face {
+  font-family: "gilroy-light";
+  src: url("../public/assets/Gilroy-Light.ttf");
+}
+@font-face {
+  font-family: "gilroy-lightitalic";
+  src: url("../public/assets/Gilroy-LightItalic.ttf");
+}
+@font-face {
+  font-family: "gilroy-medium";
+  src: url("../public/assets/Gilroy-Medium.ttf");
+}
+@font-face {
+  font-family: "gilroy-mediumitalic";
+  src: url("../public/assets/Gilroy-MediumItalic.ttf");
+}
+@font-face {
+  font-family: "gilroy-regular";
+  src: url("../public/assets/Gilroy-Regular.ttf");
+}
+@font-face {
+  font-family: "gilroy-regularitalic";
+  src: url("../public/assets/Gilroy-RegularItalic.ttf");
+}
+@font-face {
+  font-family: "gilroy-semibold";
+  src: url("../public/assets/Gilroy-SemiBold.ttf");
+}
+@font-face {
+  font-family: "gilroy-semibolditalic";
+  src: url("../public/assets/Gilroy-SemiBoldItalic.ttf");
+}
+@font-face {
+  font-family: "gilroy-thin";
+  src: url("../public/assets/Gilroy-Thin.ttf");
+}
+@font-face {
+  font-family: "gilroy-thinitalic";
+  src: url("../public/assets/Gilroy-ThinItalic.ttf");
+}
+
 * {
   margin: 0;
   padding: 0;
 }
 
-:root {
-  background-color: #000b0f;
+input {
+  all: unset;
+}
+
+input::-webkit-slider-thumb {
+  opacity: 0;
+}
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+}
+::-webkit-scrollbar-thumb {
+  background: #001a23;
+  border-radius: 10px;
 }

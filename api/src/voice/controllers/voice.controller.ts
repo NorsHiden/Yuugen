@@ -52,7 +52,7 @@ export class VoiceController {
     @Query('type') type: string,
     @Query('url') url: string,
   ) {
-    if (!url) throw new NotFoundException('Url not found');
+    if (!url.length) throw new NotFoundException('Url not found');
     if (type === 'video')
       return this.voiceService.addSong(req.user.id, guildId, url);
     return this.voiceService.addPlaylist(req.user.id, guildId, url);

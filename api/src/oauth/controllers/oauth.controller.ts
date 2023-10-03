@@ -19,7 +19,7 @@ export class OauthController {
   async oauthRedirect(@Req() req, @Res() res) {
     const access_token = await this.OAuthService.signIn(req.user);
     res.cookie('access_token', access_token, {
-      MaxAge: 86400, // 1 day
+      MaxAge: 86400 * 7, // 1 day * 7
       sameSite: true,
       secure: false,
       HttpOnly: true,
