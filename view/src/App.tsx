@@ -8,6 +8,7 @@ import { VoiceChannels } from "./Desktop/VoiceChannels";
 import axios from "axios";
 import { LoginModal } from "./Desktop/LoginModal";
 import { GuildSelectModal } from "./Desktop/SelectGuildModal";
+import { Helmet } from "react-helmet";
 
 export interface Guild {
   id: string;
@@ -121,11 +122,18 @@ export const App = () => {
   }, []);
   return (
     <div className="flex flex-col w-screen h-screen overflow-auto bg-yuugenBackgroundColor text-neutral-400 font-gilroy gap-4">
+      <Helmet>
+        <title>
+          {currentIndex > -1
+            ? `${queue[currentIndex].title} | YuugenMusic`
+            : "YuugenMusic"}
+        </title>
+      </Helmet>
       <NavBar user={user} guilds={guilds} />
       <div className="flex w-full h-full flex-row gap-4">
         <div className="flex flex-col w-full gap-4">
           <div className="flex flex-row w-full h-[13rem] gap-4">
-            <NowPlaying />
+            <NowPlaying queue={queue} currentIndex={currentIndex} />
             <VoiceChannels
               voiceChannels={voiceChannels}
               currentVoiceChannel={currentVoiceChannel}
