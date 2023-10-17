@@ -8,6 +8,8 @@ async function bootstrap() {
   const configService = new ConfigService();
   app.setGlobalPrefix('/api');
   app.use(morgan('dev'));
-  await app.listen(configService.get('PORT') || 3000, () => console.log('Listening on port 3000'));
+  await app.listen(configService.get('PORT') || 3000, () =>
+    console.log(`Listening on port ${configService.get('PORT') || 3000}`),
+  );
 }
 bootstrap();
