@@ -14,7 +14,6 @@ import { Settings } from './entities/settings.entity';
       inject: [ConfigService],
       useFactory: typeOrmConfig,
     }),
-    TypeOrmModule.forFeature([User, Guild, Music, Song, Settings]),
   ],
 })
 export class DatabaseModule {}
