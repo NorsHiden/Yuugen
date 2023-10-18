@@ -9,6 +9,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/db/entities/users.entity';
 import DiscordAuthGuard from './guards/auth.guard';
 import { DiscordStrategy } from './strategies/auth.strategy';
+import { JwtAuthGuard } from './guards/jwt.guard';
+import { JwtStrategy } from './strategies/jwt.strategy';
 
 @Module({
   imports: [
@@ -33,6 +35,8 @@ import { DiscordStrategy } from './strategies/auth.strategy';
     },
     DiscordAuthGuard,
     DiscordStrategy,
+    JwtAuthGuard,
+    JwtStrategy,
   ],
 })
 export class AuthModule {}

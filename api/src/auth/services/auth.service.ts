@@ -24,6 +24,8 @@ export class AuthService implements IAuthService {
     if (!user) throw new BadRequestException('Unauthenticated');
     const userExists = await this.usersService.find(user.id);
     if (!userExists) this.usersService.create(user);
+    else
+      this.usersService.update({ ...user, created_at: userExists.created_at });
     return this.generateJwt(user);
   }
 }
