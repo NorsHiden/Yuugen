@@ -7,6 +7,12 @@ interface IUsersService {
   delete(id: string): Promise<void>;
   findAll(): Promise<User[]>;
   findOneBy(options: any): Promise<User>;
+  getDataFromDiscord(
+    apiURL: string,
+    access_token: string,
+    refresh_token: string,
+  ): Promise<any>;
+  getUser(id: string): Promise<DiscordUser>;
 }
 
 export default IUsersService;
