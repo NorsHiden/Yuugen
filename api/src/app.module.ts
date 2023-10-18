@@ -4,6 +4,7 @@ import { DatabaseModule } from './db/db.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { UsersGuard } from './users/guards/users.guard';
+import { GuildsModule } from './guilds/guilds.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { UsersGuard } from './users/guards/users.guard';
     DatabaseModule,
     AuthModule,
     UsersModule,
+    GuildsModule,
   ],
   controllers: [],
   providers: [UsersGuard],
