@@ -11,9 +11,9 @@ export interface IGuildsService {
   create(guild: Guild): Promise<Guild>;
   update(guild: Guild): Promise<Guild>;
   delete(id: string): Promise<void>;
-  getCommonGuilds(id: string): Promise<Collection<string, DiscordGuild>>;
-  getVoices(id: string): Collection<string, GuildBasedChannel>;
-  getCurrentVoice(id: string): GuildBasedChannel;
+  getCommonGuilds(user_id: string): Promise<Collection<string, DiscordGuild>>;
+  getVoices(guild_id: string): Promise<Collection<string, GuildBasedChannel>>;
+  getCurrentVoice(guild_id: string): Promise<GuildBasedChannel>;
   // setPrefix(id: string, prefix: string): Promise<Guild>;
   // setDJRole(id: string, role: Role): Promise<Guild>;
   // setModRole(id: string, role: Role): Promise<Guild>;

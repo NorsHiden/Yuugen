@@ -69,9 +69,9 @@ export class GuildsService implements IGuildsService {
   }
 
   async getCommonGuilds(
-    user_id: string,
+    userId: string,
   ): Promise<Collection<string, DiscordGuild>> {
-    const user = this.client.users.cache.get(user_id);
+    const user = this.client.users.cache.get(userId);
     if (!user) throw new NotFoundException('User not found');
     const commonGuilds = this.client.guilds.cache.filter(async (guild) => {
       await guild.members.fetch();
@@ -80,8 +80,13 @@ export class GuildsService implements IGuildsService {
     return commonGuilds;
   }
 
-  getVoices(guildId: string): Collection<string, GuildBasedChannel> {
-    const guild = this.client.guilds.cache.get(guildId);
+  async getVoices(
+    guild_id: string,
+  ): Promise<Collection<string, GuildBasedChannel>> {
+    await this.client.guilds.fetch();
+    const guild = this.client.guilds.cache.find(
+      (guild) => guild.id === guild_id,
+    );
     if (!guild) throw new NotFoundException('Guild not found');
     const voiceChannels = guild.channels.cache.filter(
       (channel) => channel.type === ChannelType.GuildVoice,
@@ -89,7 +94,8 @@ export class GuildsService implements IGuildsService {
     return voiceChannels;
   }
 
-  getCurrentVoice(guildId: string): GuildBasedChannel {
+  async getCurrentVoice(guildId: string): Promise<GuildBasedChannel> {
+    await this.client.guilds.fetch();
     const guild = this.client.guilds.cache.get(guildId);
     if (!guild) throw new NotFoundException('Guild not found');
     const voiceChannel = guild.channels.cache.find(
@@ -97,7 +103,7 @@ export class GuildsService implements IGuildsService {
         channel.type === ChannelType.GuildVoice &&
         channel.members.has(this.client.user.id),
     );
-    return voiceChannel;
+    return voiceChannel || ({} as GuildBasedChannel);
   }
 
   async addAdmin(id: string, user: User): Promise<Guild> {

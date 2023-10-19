@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Param, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Inject, Query, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 import Routes from 'src/utils/routes';
 import Services from 'src/utils/services';
@@ -17,12 +17,12 @@ export class GuildsController {
   }
 
   @Get('voices')
-  async getVoices(@Req() req) {
-    return await this.guildsService.getVoices(req.user.id);
+  async getVoices(@Query('guild_id') guild_id: string) {
+    return this.guildsService.getVoices(guild_id);
   }
 
   @Get('current-voice')
-  async getCurrentVoice(@Req() req) {
-    return await this.guildsService.getCurrentVoice(req.user.id);
+  async getCurrentVoice(@Query('guild_id') guild_id: string) {
+    return this.guildsService.getCurrentVoice(guild_id);
   }
 }
