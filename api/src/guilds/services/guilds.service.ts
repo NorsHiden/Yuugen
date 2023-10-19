@@ -1,17 +1,50 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Client } from 'discord.js';
 import { Guild } from 'src/db/entities/guilds.entity';
 import { Music } from 'src/db/entities/music.entity';
 import { Settings } from 'src/db/entities/settings.entity';
 import { User } from 'src/db/entities/users.entity';
 import { Repository } from 'typeorm';
+import { IGuildsService } from '../interfaces/guilds.interface';
 
 @Injectable()
 export class GuildsService implements IGuildsService {
   constructor(
     @InjectRepository(Guild)
     private readonly guildRepository: Repository<Guild>,
+    private readonly client: Client,
   ) {}
+
+  async onApplicationBootstrap(): Promise<void> {
+    this.client.guilds.cache.forEach(async (guild) => {
+      const guildConnection = await this.find(guild.id);
+      if (!guildConnection) {
+        const newGuild = new Guild();
+        newGuild.id = guild.id;
+        newGuild.admins = [];
+        newGuild.mods = [];
+        newGuild.music = new Music();
+        newGuild.settings = new Settings();
+        await this.create(newGuild);
+      }
+    });
+    this.client.on('guildCreate', async (guild) => {
+      const guildConnection = await this.find(guild.id);
+      if (!guildConnection) {
+        const newGuild = new Guild();
+        newGuild.id = guild.id;
+        newGuild.admins = [];
+        newGuild.mods = [];
+        newGuild.music = new Music();
+        newGuild.settings = new Settings();
+        await this.create(newGuild);
+      }
+    });
+    this.client.on('guildDelete', async (guild) => {
+      await this.delete(guild.id);
+    });
+  }
 
   async find(id: string): Promise<Guild> {
     return await this.guildRepository.findOneBy({ id: id });

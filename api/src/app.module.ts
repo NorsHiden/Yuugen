@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './db/db.module';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
-import { UsersGuard } from './users/guards/users.guard';
+import { NecordModule } from 'necord';
+import { IntentsBitField } from 'discord.js';
+import { AppService } from './app.service';
 import { GuildsModule } from './guilds/guilds.module';
 
 @Module({
@@ -12,12 +14,23 @@ import { GuildsModule } from './guilds/guilds.module';
       envFilePath: '.env',
       isGlobal: true,
     }),
+    NecordModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        token: configService.get('DISCORD_CLIENT_TOKEN'),
+        intents: [
+          IntentsBitField.Flags.Guilds,
+          IntentsBitField.Flags.GuildMessages,
+          IntentsBitField.Flags.GuildVoiceStates,
+        ],
+      }),
+    }),
     DatabaseModule,
+    GuildsModule,
     AuthModule,
     UsersModule,
-    GuildsModule,
   ],
   controllers: [],
-  providers: [UsersGuard],
+  providers: [AppService],
 })
 export class AppModule {}
