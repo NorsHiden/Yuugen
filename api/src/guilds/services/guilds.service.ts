@@ -1,6 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Client } from 'discord.js';
+import {
+  ChannelType,
+  Client,
+  Collection,
+  Guild as DiscordGuild,
+  GuildBasedChannel,
+} from 'discord.js';
 import { Guild } from 'src/db/entities/guilds.entity';
 import { Music } from 'src/db/entities/music.entity';
 import { Settings } from 'src/db/entities/settings.entity';
@@ -62,6 +68,38 @@ export class GuildsService implements IGuildsService {
     await this.guildRepository.delete(id);
   }
 
+  async getCommonGuilds(
+    user_id: string,
+  ): Promise<Collection<string, DiscordGuild>> {
+    const user = this.client.users.cache.get(user_id);
+    if (!user) throw new NotFoundException('User not found');
+    const commonGuilds = this.client.guilds.cache.filter(async (guild) => {
+      await guild.members.fetch();
+      return guild.members.cache.has(user.id);
+    });
+    return commonGuilds;
+  }
+
+  getVoices(guildId: string): Collection<string, GuildBasedChannel> {
+    const guild = this.client.guilds.cache.get(guildId);
+    if (!guild) throw new NotFoundException('Guild not found');
+    const voiceChannels = guild.channels.cache.filter(
+      (channel) => channel.type === ChannelType.GuildVoice,
+    );
+    return voiceChannels;
+  }
+
+  getCurrentVoice(guildId: string): GuildBasedChannel {
+    const guild = this.client.guilds.cache.get(guildId);
+    if (!guild) throw new NotFoundException('Guild not found');
+    const voiceChannel = guild.channels.cache.find(
+      (channel) =>
+        channel.type === ChannelType.GuildVoice &&
+        channel.members.has(this.client.user.id),
+    );
+    return voiceChannel;
+  }
+
   async addAdmin(id: string, user: User): Promise<Guild> {
     const guild = await this.guildRepository.findOne({
       where: { id: id },
@@ -99,46 +137,6 @@ export class GuildsService implements IGuildsService {
     });
     if (!guild) throw new NotFoundException('Guild not found');
     guild.mods = guild.mods.filter((mod) => mod.id !== user.id);
-    return await this.guildRepository.save(guild);
-  }
-
-  async addMusic(id: string, music: Music): Promise<Guild> {
-    const guild = await this.guildRepository.findOne({
-      where: { id: id },
-      relations: ['music'],
-    });
-    if (!guild) throw new NotFoundException('Guild not found');
-    guild.music = music;
-    return await this.guildRepository.save(guild);
-  }
-
-  async removeMusic(id: string): Promise<Guild> {
-    const guild = await this.guildRepository.findOne({
-      where: { id: id },
-      relations: ['music'],
-    });
-    if (!guild) throw new NotFoundException('Guild not found');
-    guild.music = null;
-    return await this.guildRepository.save(guild);
-  }
-
-  async addSettings(id: string, settings: Settings): Promise<Guild> {
-    const guild = await this.guildRepository.findOne({
-      where: { id: id },
-      relations: ['settings'],
-    });
-    if (!guild) throw new NotFoundException('Guild not found');
-    guild.settings = settings;
-    return await this.guildRepository.save(guild);
-  }
-
-  async removeSettings(id: string): Promise<Guild> {
-    const guild = await this.guildRepository.findOne({
-      where: { id: id },
-      relations: ['settings'],
-    });
-    if (!guild) throw new NotFoundException('Guild not found');
-    guild.settings = null;
     return await this.guildRepository.save(guild);
   }
 }

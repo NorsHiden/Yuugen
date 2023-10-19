@@ -20,6 +20,7 @@ import { GuildsModule } from './guilds/guilds.module';
         token: configService.get('DISCORD_CLIENT_TOKEN'),
         intents: [
           IntentsBitField.Flags.Guilds,
+          IntentsBitField.Flags.GuildMembers,
           IntentsBitField.Flags.GuildMessages,
           IntentsBitField.Flags.GuildVoiceStates,
         ],
