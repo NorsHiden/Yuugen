@@ -13,6 +13,7 @@ import { Settings } from 'src/db/entities/settings.entity';
 import { User } from 'src/db/entities/users.entity';
 import { Repository } from 'typeorm';
 import { IGuildsService } from '../interfaces/guilds.interface';
+import { Song } from 'src/db/entities/song.entity';
 
 @Injectable()
 export class GuildsService implements IGuildsService {
@@ -31,6 +32,7 @@ export class GuildsService implements IGuildsService {
         newGuild.admins = [];
         newGuild.mods = [];
         newGuild.music = new Music();
+        newGuild.music.songs = [];
         newGuild.settings = new Settings();
         await this.create(newGuild);
       }
@@ -94,9 +96,9 @@ export class GuildsService implements IGuildsService {
     return voiceChannels;
   }
 
-  async getCurrentVoice(guildId: string): Promise<GuildBasedChannel> {
+  async getCurrentVoice(guild_id: string): Promise<GuildBasedChannel> {
     await this.client.guilds.fetch();
-    const guild = this.client.guilds.cache.get(guildId);
+    const guild = this.client.guilds.cache.get(guild_id);
     if (!guild) throw new NotFoundException('Guild not found');
     const voiceChannel = guild.channels.cache.find(
       (channel) =>
@@ -143,6 +145,35 @@ export class GuildsService implements IGuildsService {
     });
     if (!guild) throw new NotFoundException('Guild not found');
     guild.mods = guild.mods.filter((mod) => mod.id !== user.id);
+    return await this.guildRepository.save(guild);
+  }
+
+  async getQueue(id: string): Promise<Song[]> {
+    const guild = await this.guildRepository.findOne({
+      where: { id: id },
+      relations: ['music', 'music.songs'],
+    });
+    if (!guild) throw new NotFoundException('Guild not found');
+    return guild.music.songs;
+  }
+
+  async setQueue(id: string, queue: Song[]): Promise<Guild> {
+    const guild = await this.guildRepository.findOne({
+      where: { id: id },
+      relations: ['music', 'music.songs'],
+    });
+    if (!guild) throw new NotFoundException('Guild not found');
+    guild.music.songs = queue;
+    return await this.guildRepository.save(guild);
+  }
+
+  async setPrefix(id: string, prefix: string): Promise<Guild> {
+    const guild = await this.guildRepository.findOne({
+      where: { id: id },
+      relations: ['settings'],
+    });
+    if (!guild) throw new NotFoundException('Guild not found');
+    guild.settings.prefix = prefix;
     return await this.guildRepository.save(guild);
   }
 }
