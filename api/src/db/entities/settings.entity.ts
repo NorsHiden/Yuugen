@@ -1,22 +1,36 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Guild } from './guilds.entity';
 
 @Entity()
 export class Settings {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column()
+  @Column({
+    default: '!',
+  })
   prefix: string;
 
-  @Column()
+  @Column({
+    default: false,
+  })
   music_mod: boolean;
 
-  @Column()
+  @Column({
+    default: false,
+  })
   guild_mod: boolean;
 
-  @Column()
+  @Column({
+    default: false,
+  })
   txt2txt_mod: boolean;
 
-  @Column()
+  @Column({
+    default: false,
+  })
   txt2img_mod: boolean;
+
+  @OneToOne(() => Guild, (guild) => guild.settings)
+  guild: Guild;
 }

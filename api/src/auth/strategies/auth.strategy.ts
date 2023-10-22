@@ -26,12 +26,12 @@ export class DiscordStrategy extends PassportStrategy(Strategy, 'discord') {
         new ForbiddenException("Invalid 'code' in request", 'Invalid code'),
         false,
       );
-    const user: User = {
+    const user = {
       id: profile.id,
       access_token: accessToken,
       refresh_token: refreshToken,
       created_at: new Date(),
-    };
+    } as User;
     done(null, user);
   }
 }

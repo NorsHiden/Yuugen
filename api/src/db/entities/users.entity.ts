@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Guild } from './guilds.entity';
 
 @Entity()
 export class User {
@@ -13,4 +14,10 @@ export class User {
 
   @Column()
   created_at: Date;
+
+  @ManyToOne(() => Guild, (guild) => guild.admins)
+  admin_guilds: User;
+
+  @ManyToOne(() => Guild, (guild) => guild.mods)
+  mod_guilds: User;
 }

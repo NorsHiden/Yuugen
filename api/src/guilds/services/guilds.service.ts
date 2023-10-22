@@ -55,7 +55,10 @@ export class GuildsService implements IGuildsService {
   }
 
   async find(id: string): Promise<Guild> {
-    return await this.guildRepository.findOneBy({ id: id });
+    return await this.guildRepository.findOne({
+      where: { id: id },
+      relations: ['admins', 'mods', 'music', 'music.songs', 'settings'],
+    });
   }
 
   async create(guild: Guild): Promise<Guild> {
@@ -68,6 +71,11 @@ export class GuildsService implements IGuildsService {
 
   async delete(id: string): Promise<void> {
     await this.guildRepository.delete(id);
+  }
+
+  async getGuilds(): Promise<Collection<string, DiscordGuild>> {
+    await this.client.guilds.fetch();
+    return this.client.guilds.cache;
   }
 
   async getCommonGuilds(

@@ -1,5 +1,12 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { User } from './users.entity';
+import { Music } from './music.entity';
 
 @Entity()
 export class Song {
@@ -19,11 +26,14 @@ export class Song {
   thumbnail: string;
 
   @Column()
-  duration: string;
+  duration: number;
 
   @OneToOne(() => User, (user) => user.id)
-  requester_id: User;
+  requester: User;
 
   @Column()
   timestamp_added: Date;
+
+  @ManyToOne(() => Music, (music) => music.songs, { onDelete: 'CASCADE' })
+  music: Music;
 }
