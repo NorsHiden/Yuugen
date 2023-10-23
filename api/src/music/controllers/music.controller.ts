@@ -1,4 +1,4 @@
-import { Controller, Get, Inject, Post, Query } from '@nestjs/common';
+import { Controller, Delete, Get, Inject, Post, Query } from '@nestjs/common';
 import Routes from 'src/utils/routes';
 import Services from 'src/utils/services';
 import { IMusicService } from '../interfaces/music.interface';
@@ -23,16 +23,12 @@ export class MusicController {
   }
 
   @Post('play')
-  async play(@Query('guild_id') guild_id: string, @Query('song') song: string) {
-    return await this.musicService.play(guild_id, song);
-  }
-
-  @Post('seek')
-  async seek(
+  async play(
     @Query('guild_id') guild_id: string,
-    @Query('position') position: number,
+    @Query('index') index: number,
+    @Query('seek') seek?: number,
   ) {
-    return await this.musicService.seek(guild_id, position);
+    return await this.musicService.play(guild_id, index, seek);
   }
 
   @Post('pause')
@@ -43,16 +39,6 @@ export class MusicController {
   @Post('resume')
   async resume(@Query('guild_id') guild_id: string) {
     return await this.musicService.resume(guild_id);
-  }
-
-  @Post('previous')
-  async previous(@Query('guild_id') guild_id: string) {
-    return await this.musicService.previous(guild_id);
-  }
-
-  @Post('skip')
-  async skip(@Query('guild_id') guild_id: string) {
-    return await this.musicService.skip(guild_id);
   }
 
   @Post('stop')
@@ -78,7 +64,20 @@ export class MusicController {
     return await this.musicService.loop(guild_id);
   }
 
-  @Post('remove')
+  @Post('song')
+  async add(
+    @Query('user_id') user_id: string,
+    @Query('guild_id') guild_id: string,
+    @Query('url') url: string,
+  ) {
+    return await this.musicService.addSong(user_id, guild_id, url, {
+      source: {
+        youtube: 'video',
+      },
+    });
+  }
+
+  @Delete('song')
   async remove(
     @Query('guild_id') guild_id: string,
     @Query('song') song: number,

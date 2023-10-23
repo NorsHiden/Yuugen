@@ -1,20 +1,25 @@
+import { Song } from 'src/db/entities/song.entity';
+
 export interface IMusicService {
-  join(guildId: string, channelId: string): Promise<void>;
-  leave(guildId: string): Promise<void>;
-  play(guildId: string, song: string): Promise<void>;
-  seek(guildId: string, position: number): Promise<void>;
-  pause(guildId: string): Promise<void>;
-  resume(guildId: string): Promise<void>;
-  previous(guildId: string): Promise<void>;
-  skip(guildId: string): Promise<void>;
-  stop(guildId: string): Promise<void>;
-  volume(guildId: string, volume: number): Promise<void>;
-  shuffle(guildId: string): Promise<void>;
-  loop(guildId: string): Promise<void>;
-  removeSong(guildId: string, index: number): Promise<void>;
-  clearQueue(guildId: string): Promise<void>;
-  getQueue(guildId: string): Promise<void>;
-  current(guildId: string): Promise<void>;
+  join(guild_id: string, channelId: string): Promise<void>;
+  leave(guild_id: string): Promise<void>;
+  addSong(
+    user_id: string,
+    guild_id: string,
+    url: string,
+    searchOptions: SearchOptions,
+  ): Promise<Song>;
+  removeSong(guild_id: string, index: number): Promise<Song>;
+  play(guild_id: string, index: number, seek?: number): Promise<Song>;
+  stop(guild_id: string): Promise<Song>;
+  pause(guild_id: string): Promise<Song>;
+  resume(guild_id: string): Promise<Song>;
+  volume(guild_id: string, volume: number): Promise<{ volume: number }>;
+  shuffle(guild_id: string): Promise<Song[]>;
+  loop(guild_id: string): Promise<{ loop: 'off' | 'queue' | 'song' }>;
+  getQueue(guild_id: string): Promise<Song[]>;
+  clearQueue(guild_id: string): Promise<Song[]>;
+  current(guild_id: string): Promise<Song>;
 }
 
 export interface SearchOptions {

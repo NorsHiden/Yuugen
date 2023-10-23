@@ -45,6 +45,7 @@ export class GuildsService implements IGuildsService {
         newGuild.admins = [];
         newGuild.mods = [];
         newGuild.music = new Music();
+        newGuild.music.songs = [];
         newGuild.settings = new Settings();
         await this.create(newGuild);
       }

@@ -7,6 +7,7 @@ import { NecordModule } from 'necord';
 import { IntentsBitField } from 'discord.js';
 import { AppService } from './app.service';
 import { GuildsModule } from './guilds/guilds.module';
+import { MusicModule } from './music/music.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { GuildsModule } from './guilds/guilds.module';
     GuildsModule,
     AuthModule,
     UsersModule,
+    MusicModule,
   ],
   controllers: [],
   providers: [AppService],
