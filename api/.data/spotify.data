@@ -1,0 +1,8 @@
+{
+    "client_id": "e2f38fa26d2c492e80bf92e6121e785c",
+    "client_secret": "1a012721419745088ad0092190623ee3",
+    "redirect_url": "localhost:3000",
+    "expires_in": null,
+    "expiry": null,
+    "market": "EU"
+}

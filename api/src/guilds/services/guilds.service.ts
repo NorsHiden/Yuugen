@@ -9,11 +9,9 @@ import {
 } from 'discord.js';
 import { Guild } from 'src/db/entities/guilds.entity';
 import { Music } from 'src/db/entities/music.entity';
-import { Settings } from 'src/db/entities/settings.entity';
 import { User } from 'src/db/entities/users.entity';
 import { Repository } from 'typeorm';
 import { IGuildsService } from '../interfaces/guilds.interface';
-import { Song } from 'src/db/entities/song.entity';
 
 @Injectable()
 export class GuildsService implements IGuildsService {
@@ -24,29 +22,27 @@ export class GuildsService implements IGuildsService {
   ) {}
 
   async onApplicationBootstrap(): Promise<void> {
-    this.client.guilds.cache.forEach(async (guild) => {
-      const guildConnection = await this.find(guild.id);
-      if (!guildConnection) {
-        const newGuild = new Guild();
-        newGuild.id = guild.id;
-        newGuild.admins = [];
-        newGuild.mods = [];
-        newGuild.music = new Music();
-        newGuild.music.songs = [];
-        newGuild.settings = new Settings();
-        await this.create(newGuild);
-      }
+    await this.client.once('ready', async () => {
+      this.client.guilds.cache.forEach(async (guild) => {
+        const guildConnection = await this.find(guild.id);
+        if (!guildConnection) {
+          const newGuild = new Guild();
+          newGuild.id = guild.id;
+          newGuild.djs = [];
+          newGuild.mods = [];
+          newGuild.music = new Music();
+          await this.create(newGuild);
+        }
+      });
     });
     this.client.on('guildCreate', async (guild) => {
       const guildConnection = await this.find(guild.id);
       if (!guildConnection) {
         const newGuild = new Guild();
         newGuild.id = guild.id;
-        newGuild.admins = [];
+        newGuild.djs = [];
         newGuild.mods = [];
         newGuild.music = new Music();
-        newGuild.music.songs = [];
-        newGuild.settings = new Settings();
         await this.create(newGuild);
       }
     });
@@ -58,7 +54,7 @@ export class GuildsService implements IGuildsService {
   async find(id: string): Promise<Guild> {
     return await this.guildRepository.findOne({
       where: { id: id },
-      relations: ['admins', 'mods', 'music', 'music.songs', 'settings'],
+      relations: ['djs', 'mods', 'music'],
     });
   }
 
@@ -117,23 +113,23 @@ export class GuildsService implements IGuildsService {
     return voiceChannel || ({} as GuildBasedChannel);
   }
 
-  async addAdmin(id: string, user: User): Promise<Guild> {
+  async addDj(id: string, user: User): Promise<Guild> {
     const guild = await this.guildRepository.findOne({
       where: { id: id },
-      relations: ['admins'],
+      relations: ['djs'],
     });
     if (!guild) throw new NotFoundException('Guild not found');
-    guild.admins.push(user);
+    guild.djs.push(user);
     return await this.guildRepository.save(guild);
   }
 
-  async removeAdmin(id: string, user: User): Promise<Guild> {
+  async removeDj(id: string, user: User): Promise<Guild> {
     const guild = await this.guildRepository.findOne({
       where: { id: id },
-      relations: ['admins'],
+      relations: ['djs'],
     });
     if (!guild) throw new NotFoundException('Guild not found');
-    guild.admins = guild.admins.filter((admin) => admin.id !== user.id);
+    guild.djs = guild.djs.filter((admin) => admin.id !== user.id);
     return await this.guildRepository.save(guild);
   }
 
@@ -154,35 +150,6 @@ export class GuildsService implements IGuildsService {
     });
     if (!guild) throw new NotFoundException('Guild not found');
     guild.mods = guild.mods.filter((mod) => mod.id !== user.id);
-    return await this.guildRepository.save(guild);
-  }
-
-  async getQueue(id: string): Promise<Song[]> {
-    const guild = await this.guildRepository.findOne({
-      where: { id: id },
-      relations: ['music', 'music.songs'],
-    });
-    if (!guild) throw new NotFoundException('Guild not found');
-    return guild.music.songs;
-  }
-
-  async setQueue(id: string, queue: Song[]): Promise<Guild> {
-    const guild = await this.guildRepository.findOne({
-      where: { id: id },
-      relations: ['music', 'music.songs'],
-    });
-    if (!guild) throw new NotFoundException('Guild not found');
-    guild.music.songs = queue;
-    return await this.guildRepository.save(guild);
-  }
-
-  async setPrefix(id: string, prefix: string): Promise<Guild> {
-    const guild = await this.guildRepository.findOne({
-      where: { id: id },
-      relations: ['settings'],
-    });
-    if (!guild) throw new NotFoundException('Guild not found');
-    guild.settings.prefix = prefix;
     return await this.guildRepository.save(guild);
   }
 }

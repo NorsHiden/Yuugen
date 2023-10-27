@@ -8,24 +8,24 @@ import {
   joinVoiceChannel,
 } from '@discordjs/voice';
 import {
-  ConsoleLogger,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { Channel, ChannelType, Client } from 'discord.js';
-import { Song } from 'src/db/entities/song.entity';
+import { ChannelType, Client } from 'discord.js';
 import { IGuildsService } from 'src/guilds/interfaces/guilds.interface';
 import Services from 'src/utils/services';
 import * as player from 'play-dl';
-import { SearchOptions } from '../interfaces/music.interface';
 import IUsersService from 'src/users/interfaces/users.interface';
-import { create } from 'domain';
+import { Song } from '../interfaces/song.interface';
+import { ConfigService } from '@nestjs/config';
 
 type guildMusic = {
   connection: VoiceConnection;
   player: AudioPlayer;
   stream: AudioResource<null>;
+  queue: Song[];
   loop: 'off' | 'queue' | 'song';
   volume: number;
   state: 'playing' | 'paused' | 'stopped';
@@ -39,12 +39,25 @@ export class MusicService {
   constructor(
     @Inject(Services.GUILDS) private readonly guildsService: IGuildsService,
     @Inject(Services.USERS) private readonly usersService: IUsersService,
+    private readonly configService: ConfigService,
     private readonly client: Client,
   ) {
     this.client.on('voiceStateUpdate', async (oldState, newState) => {
       // if bot changed voice channel
     });
     this.client.on('ready', async () => {
+      await player.setToken({
+        spotify: {
+          client_id: this.configService.get<string>('SPOTIFY_CLIENT_ID'),
+          client_secret: this.configService.get<string>(
+            'SPOTIFY_CLIENT_SECRET',
+          ),
+          refresh_token: this.configService.get<string>(
+            'SPOTIFY_REFRESH_TOKEN',
+          ),
+          market: 'US',
+        },
+      });
       this.client.guilds.cache.forEach(async (guildDiscord) => {
         this.guildsMusic.set(guildDiscord.id, {
           connection: null,
@@ -54,6 +67,7 @@ export class MusicService {
             },
           }),
           stream: null,
+          queue: [],
           loop: 'off',
           volume: 100,
           state: 'stopped',
@@ -61,7 +75,6 @@ export class MusicService {
           seekStart: 0,
         });
         const guildMusic = this.guildsMusic.get(guildDiscord.id);
-        const guild = await this.guildsService.find(guildDiscord.id);
         guildMusic.player.on('stateChange', async (oldState, newState) => {
           if (newState.status === 'idle') {
             if (guildMusic.loop === 'off') {
@@ -70,7 +83,7 @@ export class MusicService {
               guildMusic.state = 'stopped';
             } else if (guildMusic.loop === 'queue') {
               guildMusic.current =
-                (guildMusic.current + 1) % guild.music.songs.length;
+                (guildMusic.current + 1) % guildMusic.queue.length;
               await this.play(guildDiscord.id, guildMusic.current);
             } else if (guildMusic.loop === 'song')
               await this.play(guildDiscord.id, guildMusic.current);
@@ -100,8 +113,6 @@ export class MusicService {
   }
 
   async leave(guild_id: string) {
-    const guild = this.client.guilds.cache.get(guild_id);
-    if (!guild) throw new NotFoundException('Guild not found');
     const guildMusic = this.guildsMusic.get(guild_id);
     if (!guildMusic) throw new NotFoundException('Guild music not found');
     if (guildMusic.connection) guildMusic.connection.destroy();
@@ -109,45 +120,79 @@ export class MusicService {
     return {};
   }
 
-  async getQueue(guild_id: string): Promise<Song[]> {
-    const guild = await this.guildsService.find(guild_id);
-    if (!guild) throw new NotFoundException('Guild not found');
-    return guild.music.songs;
+  getQueue(guild_id: string): Song[] {
+    const guildsMusic = this.guildsMusic.get(guild_id);
+    if (!guildsMusic) throw new NotFoundException('Guild not found');
+    return guildsMusic.queue;
+  }
+
+  getRequester(
+    user_id: string,
+    guild_id: string,
+  ): {
+    id: string;
+    username: string;
+    discriminator: string;
+    avatar: string;
+  } {
+    const user = this.client.guilds.cache
+      .get(guild_id)
+      .members.cache.get(user_id);
+    if (!user) throw new NotFoundException('User not found');
+    return {
+      id: user.id,
+      username: user.user.username,
+      discriminator: user.user.discriminator,
+      avatar: user.user.avatar,
+    };
   }
 
   async addSong(
     user_id: string,
     guild_id: string,
     url: string,
-    searchOptions: SearchOptions,
+    platform: string,
+    type: string,
   ): Promise<Song> {
-    const guild = await this.guildsService.find(guild_id);
-    if (!guild) throw new NotFoundException('Guild not found');
     const guildMusic = this.guildsMusic.get(guild_id);
     if (!guildMusic) throw new NotFoundException('Guild music not found');
-    const [result] = await player.search(url, searchOptions);
+    if (platform === 'youtube' && type !== 'video' && type !== 'playlist')
+      throw new ForbiddenException('Type must be video or playlist');
+    if (
+      platform !== 'youtube' &&
+      type !== 'track' &&
+      type !== 'playlist' &&
+      type !== 'album'
+    )
+      throw new ForbiddenException('Type must be track or playlist');
+    const [result] = await player.search(url, {
+      source:
+        platform === 'youtube'
+          ? {
+              youtube: type as 'playlist' | 'video',
+            }
+          : {
+              spotify: type as 'track' | 'playlist' | 'album',
+            },
+    });
     if (!result) throw new NotFoundException('Song not found');
-    const song = new Song();
-    song.title = result.title;
-    song.author = result.channel.name;
-    song.url = result.url;
-    song.duration = result.durationInSec;
-    song.thumbnail = result.thumbnails[0].url;
-    song.timestamp_added = new Date();
-    song.requester = await this.usersService.find(user_id);
-    guild.music.songs.push(song);
-    await this.guildsService.update(guild);
-    console.log(guild);
+    const song: Song = {
+      title: result.title,
+      author: result.channel.name,
+      url: result.url,
+      duration: result.durationInSec,
+      thumbnail: result.thumbnails[0].url,
+      timestamp_added: new Date(),
+      requester: this.getRequester(user_id, guild_id),
+    };
+    guildMusic.queue.push(song);
     return song;
   }
 
   async removeSong(guild_id: string, index: number) {
-    const guild = await this.guildsService.find(guild_id);
-    if (!guild) throw new NotFoundException('Guild not found');
     const guildMusic = this.guildsMusic.get(guild_id);
     if (!guildMusic) throw new NotFoundException('Guild music not found');
-    guild.music.songs.splice(index, 1);
-    await this.guildsService.update(guild);
+    guildMusic.queue.splice(index, 1);
     if (guildMusic.current === index) {
       await this.stop(guild_id);
     }
@@ -155,28 +200,21 @@ export class MusicService {
   }
 
   async clearQueue(guild_id: string): Promise<Song[]> {
-    const guild = await this.guildsService.find(guild_id);
-    if (!guild) throw new NotFoundException('Guild not found');
     const guildMusic = this.guildsMusic.get(guild_id);
     if (!guildMusic) throw new NotFoundException('Guild music not found');
-    guild.music.songs = [];
-    await this.guildsService.update(guild);
+    guildMusic.queue = [];
     if (guildMusic.current !== -1) await this.stop(guild_id);
-    return await this.guildsService
-      .find(guild_id)
-      .then((guild) => guild.music.songs);
+    return guildMusic.queue;
   }
 
   async play(guild_id: string, index: number, seek: number = 0): Promise<Song> {
-    const guild = await this.guildsService.find(guild_id);
-    if (!guild) throw new NotFoundException('Guild not found');
     const guildMusic = this.guildsMusic.get(guild_id);
     if (!guildMusic) throw new NotFoundException('Guild music not found');
     if (guildMusic.connection === null)
       throw new NotFoundException('Not connected to a voice channel');
-    if (index < 0 || index >= guild.music.songs.length)
+    if (index < 0 || index >= guildMusic.queue.length)
       throw new NotFoundException('Song not found');
-    const song = guild.music.songs[index];
+    const song = guildMusic.queue[index];
     guildMusic.current = index;
     const stream = await player.stream(song.url, {
       quality: 3,
@@ -208,34 +246,28 @@ export class MusicService {
   }
 
   async pause(guild_id: string): Promise<Song> {
-    const guild = await this.guildsService.find(guild_id);
-    if (!guild) throw new NotFoundException('Guild not found');
     const guildMusic = this.guildsMusic.get(guild_id);
     if (!guildMusic) throw new NotFoundException('Guild music not found');
     if (guildMusic.state != 'playing')
-      return guild.music.songs[guildMusic.current];
+      return guildMusic.queue[guildMusic.current];
     guildMusic.player.pause();
     guildMusic.state = 'paused';
-    return guild.music.songs[guildMusic.current];
+    return guildMusic.queue[guildMusic.current];
   }
 
   async resume(guild_id: string): Promise<Song> {
-    const guild = await this.guildsService.find(guild_id);
-    if (!guild) throw new NotFoundException('Guild not found');
     const guildMusic = this.guildsMusic.get(guild_id);
     if (!guildMusic) throw new NotFoundException('Guild music not found');
     if (guildMusic.state != 'paused')
-      return guild.music.songs[guildMusic.current];
+      return guildMusic.queue[guildMusic.current];
     guildMusic.player.unpause();
     guildMusic.state = 'playing';
-    return guild.music.songs[guildMusic.current];
+    return guildMusic.queue[guildMusic.current];
   }
 
   async volume(guild_id: string, volume: number): Promise<{ volume: number }> {
     if (volume < 0 || volume > 100)
       throw new NotFoundException('Volume must be between 0 and 100');
-    const guild = await this.guildsService.find(guild_id);
-    if (!guild) throw new NotFoundException('Guild not found');
     const guildMusic = this.guildsMusic.get(guild_id);
     if (!guildMusic) throw new NotFoundException('Guild music not found');
     guildMusic.volume = volume;
@@ -243,23 +275,21 @@ export class MusicService {
     return { volume: volume };
   }
 
-  async shuffle(guild_id: string): Promise<Song[]> {
-    const guild = await this.guildsService.find(guild_id);
-    if (!guild) throw new NotFoundException('Guild not found');
-    const songs = guild.music.songs;
+  shuffle(guild_id: string): Song[] {
+    const guildsMusic = this.guildsMusic.get(guild_id);
+    if (!guildsMusic) throw new NotFoundException('Guild not found');
+    const songs = guildsMusic.queue;
     for (let i = songs.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [songs[i], songs[j]] = [songs[j], songs[i]];
     }
-    guild.music.songs = songs;
-    await this.guildsService.update(guild);
+    guildsMusic.queue = songs;
     return songs;
   }
 
   async loop(guild_id: string): Promise<{ loop: 'off' | 'queue' | 'song' }> {
-    const guild = await this.guildsService.find(guild_id);
-    if (!guild) throw new NotFoundException('Guild not found');
     const guildMusic = this.guildsMusic.get(guild_id);
+    if (!guildMusic) throw new NotFoundException('Guild not found');
     if (guildMusic.loop === 'off') guildMusic.loop = 'queue';
     else if (guildMusic.loop === 'queue') guildMusic.loop = 'song';
     else guildMusic.loop = 'off';

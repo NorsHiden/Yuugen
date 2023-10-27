@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
-import { UsersModule } from './users/users.module';
 import { DatabaseModule } from './db/db.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { NecordModule } from 'necord';
-import { IntentsBitField } from 'discord.js';
+import { IntentsBitField, User } from 'discord.js';
 import { AppService } from './app.service';
 import { GuildsModule } from './guilds/guilds.module';
 import { MusicModule } from './music/music.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
   imports: [
@@ -28,10 +28,10 @@ import { MusicModule } from './music/music.module';
       }),
     }),
     DatabaseModule,
-    GuildsModule,
     AuthModule,
-    UsersModule,
     MusicModule,
+    UsersModule,
+    GuildsModule,
   ],
   controllers: [],
   providers: [AppService],

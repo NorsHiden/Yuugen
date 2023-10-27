@@ -1,9 +1,19 @@
-import { Controller, Delete, Get, Inject, Post, Query } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Inject,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import Routes from 'src/utils/routes';
 import Services from 'src/utils/services';
 import { IMusicService } from '../interfaces/music.interface';
+import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
 
 @Controller(Routes.MUSIC)
+@UseGuards(JwtAuthGuard)
 export class MusicController {
   constructor(
     @Inject(Services.MUSIC) private readonly musicService: IMusicService,
@@ -65,16 +75,20 @@ export class MusicController {
   }
 
   @Post('song')
-  async add(
+  async addSong(
     @Query('user_id') user_id: string,
     @Query('guild_id') guild_id: string,
     @Query('url') url: string,
+    @Query('platform') platform: string,
+    @Query('type') type: string,
   ) {
-    return await this.musicService.addSong(user_id, guild_id, url, {
-      source: {
-        youtube: 'video',
-      },
-    });
+    return await this.musicService.addSong(
+      user_id,
+      guild_id,
+      url,
+      platform,
+      type,
+    );
   }
 
   @Delete('song')

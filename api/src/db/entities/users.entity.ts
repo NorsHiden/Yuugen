@@ -1,6 +1,5 @@
 import { Column, Entity, ManyToOne, OneToOne, PrimaryColumn } from 'typeorm';
 import { Guild } from './guilds.entity';
-import { Song } from './song.entity';
 
 @Entity()
 export class User {
@@ -16,12 +15,9 @@ export class User {
   @Column()
   created_at: Date;
 
-  @ManyToOne(() => Guild, (guild) => guild.admins)
-  admin_guilds: Guild[];
+  @ManyToOne(() => Guild, (guild) => guild.djs)
+  dj_guilds: Guild[];
 
   @ManyToOne(() => Guild, (guild) => guild.mods)
   mod_guilds: Guild[];
-
-  @OneToOne(() => Song, (song) => song.requester)
-  requestedSong: Song;
 }

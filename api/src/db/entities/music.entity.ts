@@ -1,5 +1,4 @@
-import { Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Song } from './song.entity';
+import { Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Guild } from './guilds.entity';
 
 @Entity()
@@ -7,9 +6,9 @@ export class Music {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @OneToMany(() => Song, (song) => song.music, { cascade: true })
-  songs: Song[];
-
-  @OneToOne(() => Guild, (guild) => guild.music)
+  @OneToOne(() => Guild, (guild) => guild.music, {
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
   guild: Guild;
 }

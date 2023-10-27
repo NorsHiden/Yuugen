@@ -16,5 +16,6 @@ import { UsersGuard } from './guards/users.guard';
     },
     UsersGuard,
   ],
+  exports: [{ provide: Services.USERS, useClass: UsersService }],
 })
 export class UsersModule {}
