@@ -1,12 +1,18 @@
 import { ThemeProvider } from "@/components/theme-provider";
-import { MusicArea } from "./MusicArea/MusicArea";
-import NavBar from "./NavBar/NavBar";
+import {
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { YuugenMusic } from "./YuugenMusic";
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <NavBar />
-      <MusicArea />
+      <QueryClientProvider client={queryClient}>
+        <YuugenMusic />
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

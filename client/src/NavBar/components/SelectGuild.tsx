@@ -6,10 +6,10 @@ import { SelectGuildModal } from "./SelectGuildModal";
 
 export const SelectGuild = () => {
   return (
-    <div className="ml-4">
+    <div className="w-full">
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant="outline" className="w-[200px] justify-between">
+          <Button variant="ghost" className="w-full justify-between">
             <Avatar className="mr-2 h-5 w-5">
               <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
               <AvatarFallback>CN</AvatarFallback>

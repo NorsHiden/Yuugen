@@ -24,7 +24,7 @@ export class AuthController {
     res.cookie('access_token', access_token, {
       MaxAge: 86400 * 7, // 1 day * 7
       sameSite: true,
-      secure: true,
+      // secure: true,
       HttpOnly: true,
     });
     res.redirect(this.configService.get('CLIENT_URL'));
