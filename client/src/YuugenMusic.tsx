@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { SelectGuildModal } from "./NavBar/components/SelectGuildModal";
 import { Dialog } from "@radix-ui/react-dialog";
+import { LoginModal } from "./LoginModal";
 
 export const YuugenMusic = () => {
   const { isError: meIsError } = useQuery({

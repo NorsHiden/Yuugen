@@ -21,6 +21,7 @@ import IUsersService from 'src/users/interfaces/users.interface';
 import { Song } from '../interfaces/song.interface';
 import { ConfigService } from '@nestjs/config';
 import { MusicUpdate } from '../interfaces/musicupdate.interface';
+import { time } from 'console';
 
 type guildMusic = {
   connection: VoiceConnection;
@@ -310,14 +311,16 @@ export class MusicService {
     });
   }
 
-  async serverMusicUpdates(guild_id: string): Promise<MusicUpdate> {
+  serverMusicUpdates(guild_id: string): MusicUpdate {
     const guildMusic = this.guildsMusic.get(guild_id);
-    if (!guildMusic) return {} as MusicUpdate;
-    const currentVoiceChannel =
-      await this.guildsService.getCurrentVoice(guild_id);
+    if (!guildMusic)
+      return {
+        guildId: new Date().getSeconds().toString(),
+      } as MusicUpdate;
+    const currentVoiceChannel = this.guildsService.getCurrentVoice(guild_id);
     return {
       guildId: guild_id,
-      voiceChannels: await this.guildsService.getVoices(guild_id),
+      voiceChannels: this.guildsService.getVoices(guild_id),
       currentVoiceChannel: currentVoiceChannel,
       queue: guildMusic.queue,
       currentSong: guildMusic.current,

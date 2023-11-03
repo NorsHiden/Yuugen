@@ -87,10 +87,7 @@ export class GuildsService implements IGuildsService {
     return commonGuilds;
   }
 
-  async getVoices(
-    guild_id: string,
-  ): Promise<Collection<string, GuildBasedChannel>> {
-    await this.client.guilds.fetch();
+  getVoices(guild_id: string): Collection<string, GuildBasedChannel> {
     const guild = this.client.guilds.cache.find(
       (guild) => guild.id === guild_id,
     );
@@ -101,8 +98,7 @@ export class GuildsService implements IGuildsService {
     return voiceChannels;
   }
 
-  async getCurrentVoice(guild_id: string): Promise<GuildBasedChannel> {
-    await this.client.guilds.fetch();
+  getCurrentVoice(guild_id: string): GuildBasedChannel {
     const guild = this.client.guilds.cache.get(guild_id);
     if (!guild) throw new NotFoundException('Guild not found');
     const voiceChannel = guild.channels.cache.find(

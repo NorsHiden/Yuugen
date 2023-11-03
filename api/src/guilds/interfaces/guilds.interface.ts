@@ -12,6 +12,6 @@ export interface IGuildsService {
   update(guild: Guild): Promise<Guild>;
   delete(id: string): Promise<void>;
   getCommonGuilds(user_id: string): Promise<Collection<string, DiscordGuild>>;
-  getVoices(guild_id: string): Promise<Collection<string, GuildBasedChannel>>;
-  getCurrentVoice(guild_id: string): Promise<GuildBasedChannel>;
+  getVoices(guild_id: string): Collection<string, GuildBasedChannel>;
+  getCurrentVoice(guild_id: string): GuildBasedChannel;
 }

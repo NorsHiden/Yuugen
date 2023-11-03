@@ -12,7 +12,8 @@ import Routes from 'src/utils/routes';
 import Services from 'src/utils/services';
 import { IMusicService } from '../interfaces/music.interface';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { interval, map } from 'rxjs';
+import { interval, map, switchMap } from 'rxjs';
+import { MusicUpdate } from '../interfaces/musicupdate.interface';
 
 @Controller(Routes.MUSIC)
 @UseGuards(JwtAuthGuard)
@@ -125,12 +126,11 @@ export class MusicController {
   }
 
   @Sse('updates')
-  async updates(@Query('guild_id') guild_id: string) {
+  updates(@Query('guild_id') guild_id: string) {
     return interval(1000).pipe(
-      map(async (_) => {
-        console.log('sse');
+      map((_) => {
         return {
-          data: await this.musicService.serverMusicUpdates(guild_id),
+          data: this.musicService.serverMusicUpdates(guild_id),
         };
       }),
     );

@@ -10,7 +10,12 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { MusicUpdate } from "@/lib/types/MusicUpdate";
+import axios from "axios";
+import { GuildBasedChannel, VoiceChannel } from "discord.js";
 import { Replace, Unplug, Volume2 } from "lucide-react";
+import { useState } from "react";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 const AvatarGroup = () => {
   return (
@@ -38,7 +43,67 @@ const AvatarGroup = () => {
   );
 };
 
-export const VoiceChannels = () => {
+interface VoiceChannelItemProps {
+  musicUpdate: MusicUpdate;
+  channel: GuildBasedChannel;
+}
+
+const VoiceChannelItem = ({ musicUpdate, channel }: VoiceChannelItemProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const joinLeaveChannel = (channelId: string) => {
+    if (channel.id === musicUpdate.currentVoiceChannel.id)
+      axios
+        .post(`/api/music/leave?guild_id=${musicUpdate.guildId}`)
+        .then(() => {
+          setIsLoading(false);
+        });
+    else
+      axios
+        .post(
+          `/api/music/join?guild_id=${musicUpdate.guildId}&channel_id=${channelId}`
+        )
+        .then(() => {
+          setIsLoading(false);
+        });
+    setIsLoading(true);
+  };
+
+  const ChannelState = () => {
+    if (isLoading)
+      return <AiOutlineLoading3Quarters className="ml-auto animate-spin" />;
+    else if (channel.id === musicUpdate.currentVoiceChannel.id)
+      return (
+        <Unplug className="ml-auto opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all" />
+      );
+    else
+      return (
+        <Replace className="ml-auto opacity-0 group-hover:opacity-100 scale-0 group-hover:scale-100 transition-all" />
+      );
+  };
+
+  return (
+    <Button
+      variant={
+        channel.id === musicUpdate.currentVoiceChannel.id ? "default" : "ghost"
+      }
+      className={`group flex w-[calc(100%-1rem)] justify-start items-center gap-2 ${
+        isLoading && "cursor-wait opacity-50"
+      }`}
+      key={channel.id}
+      onClick={() => joinLeaveChannel(channel.id)}
+    >
+      <Volume2 />
+      <h3 className="text-lg font-bold">{channel.name}</h3>
+      <ChannelState />
+    </Button>
+  );
+};
+
+interface VoiceChannelsProps {
+  musicUpdate: MusicUpdate;
+}
+
+export const VoiceChannels = ({ musicUpdate }: VoiceChannelsProps) => {
   return (
     <div className="w-full p-4 border rounded-2xl max-md:min-w-fit lg:h-full">
       <div className="flex justify-between">
@@ -55,7 +120,7 @@ export const VoiceChannels = () => {
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
-                <DialogTitle>
+                <DialogTitle asChild>
                   <h2 className="text-xl font-bold tracking-tight">
                     Voice Channels
                   </h2>
@@ -64,13 +129,16 @@ export const VoiceChannels = () => {
               </DialogHeader>
               <Separator />
               <ScrollArea className="h-72 rounded-md">
-                <Button
-                  variant="ghost"
-                  className="flex w-full justify-start items-center gap-2"
-                >
-                  <Volume2 />
-                  <h3 className="text-lg font-bold">🌍︱Publić</h3>
-                </Button>
+                {musicUpdate.voiceChannels &&
+                  musicUpdate.voiceChannels.map(
+                    (channel: GuildBasedChannel) => (
+                      <VoiceChannelItem
+                        musicUpdate={musicUpdate}
+                        channel={channel}
+                        key={channel.id}
+                      />
+                    )
+                  )}
               </ScrollArea>
             </DialogContent>
           </Dialog>
