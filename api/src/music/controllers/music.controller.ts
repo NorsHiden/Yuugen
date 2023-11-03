@@ -5,12 +5,14 @@ import {
   Inject,
   Post,
   Query,
+  Sse,
   UseGuards,
 } from '@nestjs/common';
 import Routes from 'src/utils/routes';
 import Services from 'src/utils/services';
 import { IMusicService } from '../interfaces/music.interface';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
+import { interval, map } from 'rxjs';
 
 @Controller(Routes.MUSIC)
 @UseGuards(JwtAuthGuard)
@@ -74,6 +76,14 @@ export class MusicController {
     return await this.musicService.loop(guild_id);
   }
 
+  @Get('search')
+  async search(
+    @Query('query') query: string,
+    @Query('options') options: string,
+  ) {
+    return await this.musicService.search(query, options);
+  }
+
   @Post('song')
   async addSong(
     @Query('user_id') user_id: string,
@@ -112,5 +122,17 @@ export class MusicController {
   @Get('current')
   async current(@Query('guild_id') guild_id: string) {
     return await this.musicService.current(guild_id);
+  }
+
+  @Sse('updates')
+  async updates(@Query('guild_id') guild_id: string) {
+    return interval(1000).pipe(
+      map(async (_) => {
+        console.log('sse');
+        return {
+          data: await this.musicService.serverMusicUpdates(guild_id),
+        };
+      }),
+    );
   }
 }

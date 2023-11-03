@@ -20,6 +20,7 @@ import * as player from 'play-dl';
 import IUsersService from 'src/users/interfaces/users.interface';
 import { Song } from '../interfaces/song.interface';
 import { ConfigService } from '@nestjs/config';
+import { MusicUpdate } from '../interfaces/musicupdate.interface';
 
 type guildMusic = {
   connection: VoiceConnection;
@@ -294,5 +295,38 @@ export class MusicService {
     else if (guildMusic.loop === 'queue') guildMusic.loop = 'song';
     else guildMusic.loop = 'off';
     return { loop: guildMusic.loop };
+  }
+
+  async search(
+    query: string,
+    options: string,
+  ): Promise<player.YouTubeVideo[] | player.YouTubePlayList[]> {
+    if (options !== 'video' && options !== 'playlist')
+      throw new ForbiddenException('Options must be video or playlist');
+    return await player.search(query, {
+      source: {
+        youtube: options,
+      },
+    });
+  }
+
+  async serverMusicUpdates(guild_id: string): Promise<MusicUpdate> {
+    const guildMusic = this.guildsMusic.get(guild_id);
+    if (!guildMusic) return {} as MusicUpdate;
+    const currentVoiceChannel =
+      await this.guildsService.getCurrentVoice(guild_id);
+    return {
+      guildId: guild_id,
+      voiceChannels: await this.guildsService.getVoices(guild_id),
+      currentVoiceChannel: currentVoiceChannel,
+      queue: guildMusic.queue,
+      currentSong: guildMusic.current,
+      state: guildMusic.state,
+      loop: guildMusic.loop,
+      volume: guildMusic.volume,
+      voiceChannelMembers: currentVoiceChannel
+        ? currentVoiceChannel.members
+        : ([] as any),
+    };
   }
 }

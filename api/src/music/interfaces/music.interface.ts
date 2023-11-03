@@ -1,3 +1,5 @@
+import { YouTubePlayList, YouTubeVideo } from 'play-dl';
+import { MusicUpdate } from './musicupdate.interface';
 import { SearchOptions } from './searchoptions.interface';
 import { Song } from './song.interface';
 
@@ -31,4 +33,9 @@ export interface IMusicService {
   getQueue(guild_id: string): Promise<Song[]>;
   clearQueue(guild_id: string): Promise<Song[]>;
   current(guild_id: string): Promise<Song>;
+  search(
+    query: string,
+    options: string,
+  ): Promise<YouTubeVideo[] | YouTubePlayList[]>;
+  serverMusicUpdates(guild_id: string): Promise<MusicUpdate>;
 }

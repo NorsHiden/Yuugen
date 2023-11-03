@@ -38,8 +38,8 @@ const Song = () => {
 
 export const Queue = () => {
   return (
-    <ScrollArea className="h-full rounded-xl whitespace-nowrap">
-      <div className="flex sticky top-0 items-center justify-between px-4 my-2 gap-2 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <ScrollArea className="h-full border px-4 rounded-xl whitespace-nowrap">
+      <div className="flex sticky top-0 items-center justify-between px-4 py-2 my-2 gap-2 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <span className="w-2">#</span>
         <span className="lg:w-12 w-24">{""}</span>
         <span className="w-52">Title</span>

@@ -59,7 +59,7 @@ export const UserNav = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <SelectGuild />
+        <SelectGuild open={undefined} />
         <ModeToggle />
         <Button variant="ghost" className="justify-start w-full">
           <Settings2 />
