@@ -16,6 +16,7 @@ import { TbListSearch } from "react-icons/tb";
 import { useEffect, useState } from "react";
 import { Clock } from "lucide-react";
 import axios from "axios";
+import { AiOutlineLoading } from "react-icons/ai";
 
 interface SongOrPlaylistProps {
   result: YouTubeVideo | YouTubePlayList;
@@ -23,8 +24,24 @@ interface SongOrPlaylistProps {
 }
 
 export const SongOrPlaylist = ({ result, isSong }: SongOrPlaylistProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const addSong = () => {
+    axios
+      .post(
+        `/api/music/queue?url=${
+          result.url
+        }&guild_id=${window.location.pathname.slice(1)}`
+      )
+      .then((res) => setIsLoading(false));
+    setIsLoading(true);
+  };
+
   return (
-    <Button variant="ghost" className="group w-full h-16 justify-between">
+    <Button
+      variant="ghost"
+      className="group w-full h-16 justify-between"
+      onClick={addSong}
+    >
       <div className="flex items-center">
         <img
           className="w-12 h-12 rounded-xl object-cover object-center"
@@ -45,7 +62,11 @@ export const SongOrPlaylist = ({ result, isSong }: SongOrPlaylistProps) => {
           {(result as YouTubeVideo).durationRaw}
         </div>
       )}
-      <TbPlaylistAdd className="lg:opacity-0 group-hover:opacity-100 transition-opacity h-5 w-5" />
+      {isLoading ? (
+        <AiOutlineLoading className="animate-spin h-5 w-5" />
+      ) : (
+        <TbPlaylistAdd className="lg:opacity-0 group-hover:opacity-100 transition-opacity h-5 w-5" />
+      )}
     </Button>
   );
 };

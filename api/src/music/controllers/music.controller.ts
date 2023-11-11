@@ -12,8 +12,7 @@ import Routes from 'src/utils/routes';
 import Services from 'src/utils/services';
 import { IMusicService } from '../interfaces/music.interface';
 import { JwtAuthGuard } from 'src/auth/guards/jwt.guard';
-import { interval, map, switchMap } from 'rxjs';
-import { MusicUpdate } from '../interfaces/musicupdate.interface';
+import { interval, map } from 'rxjs';
 
 @Controller(Routes.MUSIC)
 @UseGuards(JwtAuthGuard)

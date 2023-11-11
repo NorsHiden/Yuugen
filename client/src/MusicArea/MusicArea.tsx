@@ -19,7 +19,7 @@ export const MusicArea = () => {
     <div className="flex h-[calc(100%-3.5rem)] gap-2">
       <div className="flex flex-col m-2 pt-2 gap-4 w-full">
         <div className="flex flex-col md:flex-row md:min-h-[12rem] min-h-[24rem] gap-4">
-          <MusicController />
+          <MusicController musicUpdate={musicUpdate} />
           <VoiceChannels musicUpdate={musicUpdate} />
         </div>
         <Queue />
