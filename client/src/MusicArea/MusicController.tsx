@@ -2,8 +2,12 @@ import { Search } from "@/NavBar/components/Search";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { MusicUpdate } from "@/lib/types/MusicUpdate";
+import { secondsToHHMMSS } from "@/lib/utils";
 import { Dialog, DialogTrigger } from "@radix-ui/react-dialog";
 import { PlusCircledIcon } from "@radix-ui/react-icons";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { AiOutlineLoading } from "react-icons/ai";
 import {
   BsFillPlayCircleFill,
   BsFillSkipEndFill,
@@ -17,6 +21,10 @@ export const MusicController = ({
 }: {
   musicUpdate: MusicUpdate;
 }) => {
+  const { isError, isLoading } = useQuery({
+    queryKey: ["getMe"],
+    queryFn: async () => axios.get("/api/users/me"),
+  });
   return (
     <div className="flex relative md:w-full rounded-2xl lg:min-w-[30rem] h-full overflow-hidden">
       {musicUpdate.queue && musicUpdate.queue.length > 0 ? (
@@ -25,7 +33,9 @@ export const MusicController = ({
             className="flex absolute z-10 w-full h-full bg-cover bg-no-repeat bg-center blur-lg opacity-80"
             style={{
               backgroundImage: `url(${
-                musicUpdate.queue[musicUpdate.currentSong].thumbnail
+                musicUpdate.queue[
+                  musicUpdate.currentSong > -1 ? musicUpdate.currentSong : 0
+                ].thumbnail
               })`,
             }}
           />
@@ -73,16 +83,7 @@ export const MusicController = ({
                   className="w-full"
                 />
                 <div className="flex items-top justify-between text-sm mt-2">
-                  <p>
-                    {" "}
-                    {
-                      musicUpdate.queue[
-                        musicUpdate.currentSong > -1
-                          ? musicUpdate.currentSong
-                          : 0
-                      ].title
-                    }
-                  </p>
+                  <p>00:00</p>
                   <div className="flex items-center gap-2 text-primary-foreground mt-2">
                     <button className="hover:scale-110 hover:text-primary transition-all">
                       <BsShuffle className="text-xl" />
@@ -100,7 +101,15 @@ export const MusicController = ({
                       <BsRepeat className="text-xl" />
                     </button>
                   </div>
-                  <p>00:00</p>
+                  <p>
+                    {secondsToHHMMSS(
+                      musicUpdate.queue[
+                        musicUpdate.currentSong > -1
+                          ? musicUpdate.currentSong
+                          : 0
+                      ].duration
+                    )}
+                  </p>
                 </div>
               </div>
             </div>
@@ -108,22 +117,22 @@ export const MusicController = ({
         </>
       ) : (
         <div className="flex w-full h-full items-center justify-center border ">
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button
-                variant="secondary"
-                disabled={
-                  musicUpdate.queue && musicUpdate.queue.length > 0
-                    ? true
-                    : false
-                }
-              >
-                <PlusCircledIcon className="mr-2 h-4 w-4" />
-                Add music
-              </Button>
-            </DialogTrigger>
-            <Search />
-          </Dialog>
+          {musicUpdate.queue ? (
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  variant="secondary"
+                  disabled={isError || isLoading ? true : false}
+                >
+                  <PlusCircledIcon className="mr-2 h-4 w-4" />
+                  Add music
+                </Button>
+              </DialogTrigger>
+              <Search />
+            </Dialog>
+          ) : (
+            <AiOutlineLoading className="animate-spin h-10 w-10" />
+          )}
         </div>
       )}
     </div>

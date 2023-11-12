@@ -3,6 +3,7 @@ import {
   Collection,
   Guild as DiscordGuild,
   GuildBasedChannel,
+  Channel,
 } from 'discord.js';
 
 export interface IGuildsService {
@@ -13,5 +14,5 @@ export interface IGuildsService {
   delete(id: string): Promise<void>;
   getCommonGuilds(user_id: string): Promise<Collection<string, DiscordGuild>>;
   getVoices(guild_id: string): Collection<string, GuildBasedChannel>;
-  getCurrentVoice(guild_id: string): GuildBasedChannel;
+  getCurrentVoice(guild_id: string): Channel;
 }

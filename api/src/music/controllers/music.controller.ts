@@ -5,6 +5,7 @@ import {
   Inject,
   Post,
   Query,
+  Req,
   Sse,
   UseGuards,
 } from '@nestjs/common';
@@ -86,14 +87,14 @@ export class MusicController {
 
   @Post('song')
   async addSong(
-    @Query('user_id') user_id: string,
+    @Req() req,
     @Query('guild_id') guild_id: string,
     @Query('url') url: string,
     @Query('platform') platform: string,
     @Query('type') type: string,
   ) {
     return await this.musicService.addSong(
-      user_id,
+      req.user.id,
       guild_id,
       url,
       platform,

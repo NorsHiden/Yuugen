@@ -4,7 +4,6 @@ import { Queue } from "./Queue";
 import { useEffect, useState } from "react";
 import { getSSEUpdates } from "./MusicAreaControl";
 import { MusicUpdate } from "@/lib/types/MusicUpdate";
-import { Collection, GuildBasedChannel, GuildMember } from "discord.js";
 
 export const MusicArea = () => {
   const [musicUpdate, setMusicUpdate] = useState<MusicUpdate>(
@@ -22,7 +21,7 @@ export const MusicArea = () => {
           <MusicController musicUpdate={musicUpdate} />
           <VoiceChannels musicUpdate={musicUpdate} />
         </div>
-        <Queue />
+        <Queue musicUpdate={musicUpdate} />
       </div>
       <div className="hidden lg:flex lg:flex-col border-l lg:w-96 h-full">
         <h2 className="text-xl font-bold m-4 tracking-tight">Audit Log</h2>

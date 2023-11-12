@@ -28,9 +28,11 @@ export const SongOrPlaylist = ({ result, isSong }: SongOrPlaylistProps) => {
   const addSong = () => {
     axios
       .post(
-        `/api/music/queue?url=${
+        `/api/music/song?url=${
           result.url
-        }&guild_id=${window.location.pathname.slice(1)}`
+        }&guild_id=${window.location.pathname.slice(1)}&platform=youtube&type=${
+          isSong ? "video" : "playlist"
+        }`
       )
       .then((res) => setIsLoading(false));
     setIsLoading(true);
@@ -83,7 +85,6 @@ export const Search = () => {
     axios
       .get(`/api/music/search?query=${debouncedSearchTerm}&options=video`)
       .then((res) => {
-        console.log(res.data);
         setSingleResults(res.data);
       });
     axios

@@ -12,33 +12,43 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { MusicUpdate } from "@/lib/types/MusicUpdate";
 import axios from "axios";
-import { GuildBasedChannel, VoiceChannel } from "discord.js";
+import { GuildBasedChannel } from "discord.js";
 import { Replace, Unplug, Volume2 } from "lucide-react";
 import { useState } from "react";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
+import { AiOutlineLoading, AiOutlineLoading3Quarters } from "react-icons/ai";
 
-const AvatarGroup = () => {
+const AvatarGroup = ({ musicUpdate }: { musicUpdate: MusicUpdate }) => {
   return (
     <div className="flex relative items-center gap-2 mt-2 h-8">
-      <Avatar className="absolute top-0 left-0 z-0 h-8 w-8 hover:translate-x-[-0.75rem] transition-all">
-        <AvatarImage src="https://i.pravatar.cc/150?u=a042581f4e29026024d" />
-        <AvatarFallback>F</AvatarFallback>
-      </Avatar>
-      <Avatar className="absolute left-4 z-10 h-8 w-8  hover:translate-x-[-0.75rem] transition-all">
-        <AvatarImage src="https://i.pravatar.cc/150?u=a04258a2462d826712d" />
-        <AvatarFallback>F</AvatarFallback>
-      </Avatar>
-      <Avatar className="absolute left-8 z-20 h-8 w-8  hover:translate-x-[-0.75rem] transition-all">
-        <AvatarImage src="https://i.pravatar.cc/150?u=a042581f4e29026704d" />
-        <AvatarFallback>F</AvatarFallback>
-      </Avatar>
-      <Avatar className="absolute left-12 z-20 h-8 w-8  hover:translate-x-[-0.75rem] transition-all">
-        <AvatarImage src="https://i.pravatar.cc/150?u=a04258114e29026302d" />
-        <AvatarFallback>F</AvatarFallback>
-      </Avatar>
-      <Avatar className="absolute left-16 z-20 h-8 w-8">
-        <AvatarFallback>+1</AvatarFallback>
-      </Avatar>
+      {musicUpdate.voiceChannelMembers &&
+        musicUpdate.voiceChannelMembers.map(
+          (member, index) =>
+            index < 5 && (
+              <Avatar
+                key={index}
+                className="absolute top-0 h-8 w-8 hover:translate-x-[-0.75rem] transition-all"
+                style={{
+                  left: `${index * 1.3}rem`,
+                }}
+              >
+                <AvatarImage src={member.displayAvatarURL} />
+                <AvatarFallback>{member.displayName}</AvatarFallback>
+              </Avatar>
+            )
+        )}
+      {musicUpdate.voiceChannelMembers &&
+        musicUpdate.voiceChannelMembers.length > 5 && (
+          <Avatar
+            className="absolute left z-20 h-8 w-8"
+            style={{
+              left: `${5 * 1.3}rem`,
+            }}
+          >
+            <AvatarFallback>
+              +{musicUpdate.voiceChannelMembers.length - 5}
+            </AvatarFallback>
+          </Avatar>
+        )}
     </div>
   );
 };
@@ -67,7 +77,6 @@ const VoiceChannelItem = ({ musicUpdate, channel }: VoiceChannelItemProps) => {
         });
     setIsLoading(true);
   };
-
   const ChannelState = () => {
     if (isLoading)
       return <AiOutlineLoading3Quarters className="ml-auto animate-spin" />;
@@ -104,6 +113,13 @@ interface VoiceChannelsProps {
 }
 
 export const VoiceChannels = ({ musicUpdate }: VoiceChannelsProps) => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const leaveChannel = () => {
+    axios.post(`/api/music/leave?guild_id=${musicUpdate.guildId}`).then(() => {
+      setIsLoading(false);
+    });
+    setIsLoading(true);
+  };
   return (
     <div className="w-full p-4 border rounded-2xl max-md:min-w-fit lg:h-full">
       <div className="flex justify-between">
@@ -144,16 +160,34 @@ export const VoiceChannels = ({ musicUpdate }: VoiceChannelsProps) => {
           </Dialog>
         </div>
       </div>
-      <div className="flex items-center w-full bg-secondary p-2 rounded-lg mt-4 justify-between">
-        <div className="flex items-center gap-2 ml-4">
-          <div className="w-2 h-2 rounded-full bg-green-500"></div>
-          <h3 className="text-lg font-bold">🌍︱Publić</h3>
+      {musicUpdate.currentVoiceChannel &&
+      musicUpdate.currentVoiceChannel.name ? (
+        <div className="flex items-center w-full bg-secondary p-2 rounded-lg mt-4 justify-between">
+          <div className="flex items-center gap-2 ml-4">
+            <div className="w-2 h-2 rounded-full bg-green-500"></div>
+            <h3 className="text-lg font-bold">
+              {musicUpdate.currentVoiceChannel.name}
+            </h3>
+          </div>
+          {isLoading ? (
+            <AiOutlineLoading className="animate-spin text-sm h-10 mr-4" />
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="hover:bg-destructive "
+              onClick={leaveChannel}
+            >
+              <Unplug />
+            </Button>
+          )}
         </div>
-        <Button variant="ghost" size="icon" className="hover:bg-destructive">
-          <Unplug />
-        </Button>
-      </div>
-      <AvatarGroup />
+      ) : (
+        <div className="flex items-center w-full border-dotted border-2 p-2 rounded-lg mt-4 h-24 justify-center text-secondary">
+          No channel has been selected.
+        </div>
+      )}
+      <AvatarGroup musicUpdate={musicUpdate} />
     </div>
   );
 };

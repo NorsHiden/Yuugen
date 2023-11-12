@@ -1,11 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
+  Channel,
   ChannelType,
   Client,
   Collection,
   Guild as DiscordGuild,
   GuildBasedChannel,
+  VoiceChannel,
 } from 'discord.js';
 import { Guild } from 'src/db/entities/guilds.entity';
 import { Music } from 'src/db/entities/music.entity';
@@ -98,7 +100,7 @@ export class GuildsService implements IGuildsService {
     return voiceChannels;
   }
 
-  getCurrentVoice(guild_id: string): GuildBasedChannel {
+  getCurrentVoice(guild_id: string): Channel {
     const guild = this.client.guilds.cache.get(guild_id);
     if (!guild) throw new NotFoundException('Guild not found');
     const voiceChannel = guild.channels.cache.find(
@@ -106,7 +108,7 @@ export class GuildsService implements IGuildsService {
         channel.type === ChannelType.GuildVoice &&
         channel.members.has(this.client.user.id),
     );
-    return voiceChannel || ({} as GuildBasedChannel);
+    return voiceChannel || ({} as Channel);
   }
 
   async addDj(id: string, user: User): Promise<Guild> {

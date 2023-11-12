@@ -21,7 +21,6 @@ import IUsersService from 'src/users/interfaces/users.interface';
 import { Song } from '../interfaces/song.interface';
 import { ConfigService } from '@nestjs/config';
 import { MusicUpdate } from '../interfaces/musicupdate.interface';
-import { time } from 'console';
 
 type guildMusic = {
   connection: VoiceConnection;
@@ -167,7 +166,7 @@ export class MusicService {
       type !== 'album'
     )
       throw new ForbiddenException('Type must be track or playlist');
-    const [result] = await player.search(url, {
+    const [result] = (await player.search(url, {
       source:
         platform === 'youtube'
           ? {
@@ -176,19 +175,23 @@ export class MusicService {
           : {
               spotify: type as 'track' | 'playlist' | 'album',
             },
-    });
+    })) as any;
     if (!result) throw new NotFoundException('Song not found');
-    const song: Song = {
-      title: result.title,
-      author: result.channel.name,
-      url: result.url,
-      duration: result.durationInSec,
-      thumbnail: result.thumbnails[0].url,
-      timestamp_added: new Date(),
-      requester: this.getRequester(user_id, guild_id),
-    };
-    guildMusic.queue.push(song);
-    return song;
+    if (type == 'playlist') {
+      result.map((single) => guildMusic.queue.push(single));
+    } else {
+      const song: Song = {
+        title: result.title,
+        author: result.channel.name,
+        url: result.url,
+        duration: result.durationInSec,
+        thumbnail: result.thumbnails[0].url,
+        timestamp_added: new Date(),
+        requester: this.getRequester(user_id, guild_id),
+      };
+      guildMusic.queue.push(song);
+      return song;
+    }
   }
 
   async removeSong(guild_id: string, index: number) {
@@ -317,7 +320,8 @@ export class MusicService {
       return {
         guildId: new Date().getSeconds().toString(),
       } as MusicUpdate;
-    const currentVoiceChannel = this.guildsService.getCurrentVoice(guild_id);
+    const currentVoiceChannel: any =
+      this.guildsService.getCurrentVoice(guild_id);
     return {
       guildId: guild_id,
       voiceChannels: this.guildsService.getVoices(guild_id),
@@ -327,9 +331,7 @@ export class MusicService {
       state: guildMusic.state,
       loop: guildMusic.loop,
       volume: guildMusic.volume,
-      voiceChannelMembers: currentVoiceChannel
-        ? currentVoiceChannel.members
-        : ([] as any),
+      voiceChannelMembers: currentVoiceChannel.members,
     };
   }
 }

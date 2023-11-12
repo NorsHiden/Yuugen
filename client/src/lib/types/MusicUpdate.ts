@@ -3,9 +3,11 @@ import {
   GuildBasedChannel,
   GuildMember,
   ThreadMemberManager,
+  User,
+  UserFlagsBitField,
 } from "discord.js";
 
-type Song = {
+export type Song = {
   title: string;
 
   author: string;
@@ -29,7 +31,10 @@ export type MusicUpdate = {
   guildId: string;
   voiceChannels: Collection<string, GuildBasedChannel>;
   currentVoiceChannel: GuildBasedChannel;
-  voiceChannelMembers: Collection<string, GuildMember> | ThreadMemberManager;
+  voiceChannelMembers: {
+    displayAvatarURL: string;
+    displayName: string;
+  }[];
   queue: Song[];
   currentSong: number;
   volume: number;
