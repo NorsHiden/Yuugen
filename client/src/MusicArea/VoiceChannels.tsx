@@ -183,7 +183,7 @@ export const VoiceChannels = ({ musicUpdate }: VoiceChannelsProps) => {
           )}
         </div>
       ) : (
-        <div className="flex items-center w-full border-dotted border-2 p-2 rounded-lg mt-4 h-24 justify-center text-secondary">
+        <div className="flex items-center w-full border-dotted border-2 p-2 rounded-lg mt-4 h-16 justify-center text-secondary">
           No channel has been selected.
         </div>
       )}

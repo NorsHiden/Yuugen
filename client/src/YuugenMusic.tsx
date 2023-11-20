@@ -5,6 +5,10 @@ import axios from "axios";
 import { SelectGuildModal } from "./NavBar/components/SelectGuildModal";
 import { Dialog } from "@radix-ui/react-dialog";
 import { LoginModal } from "./LoginModal";
+import { useEffect, useState } from "react";
+import { MusicUpdate } from "./lib/types/MusicUpdate";
+import { getSSEUpdates } from "./MusicArea/MusicAreaControl";
+import { Guild } from "discord.js";
 
 export const YuugenMusic = () => {
   const { isError: meIsError } = useQuery({
@@ -15,6 +19,13 @@ export const YuugenMusic = () => {
     queryKey: ["guilds"],
     queryFn: async () => axios.get("/api/guilds/common"),
   });
+  const [musicUpdate, setMusicUpdate] = useState<MusicUpdate>(
+    {} as MusicUpdate
+  );
+
+  useEffect(() => {
+    getSSEUpdates(window.location.pathname.slice(1), setMusicUpdate);
+  }, []);
 
   return (
     <div className="flex  flex-col w-screen h-screen">
@@ -23,7 +34,7 @@ export const YuugenMusic = () => {
         open={
           isLoading ||
           guilds?.data.find(
-            (guild) => window.location.pathname.split("/")[1] == guild.id
+            (guild: Guild) => window.location.pathname.split("/")[1] == guild.id
           )
             ? false
             : true
@@ -31,8 +42,8 @@ export const YuugenMusic = () => {
       >
         <SelectGuildModal />
       </Dialog>
-      <NavBar />
-      <MusicArea />
+      <NavBar queue={musicUpdate.queue} />
+      <MusicArea musicUpdate={musicUpdate} />
     </div>
   );
 };

@@ -17,13 +17,19 @@ import { useEffect, useState } from "react";
 import { Clock } from "lucide-react";
 import axios from "axios";
 import { AiOutlineLoading } from "react-icons/ai";
+import { Song } from "@/lib/types/MusicUpdate";
 
 interface SongOrPlaylistProps {
   result: YouTubeVideo | YouTubePlayList;
+  queue: Song[];
   isSong?: boolean;
 }
 
-export const SongOrPlaylist = ({ result, isSong }: SongOrPlaylistProps) => {
+export const SongOrPlaylist = ({
+  result,
+  queue,
+  isSong,
+}: SongOrPlaylistProps) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const addSong = () => {
     axios
@@ -40,7 +46,12 @@ export const SongOrPlaylist = ({ result, isSong }: SongOrPlaylistProps) => {
 
   return (
     <Button
-      variant="ghost"
+      variant={
+        queue.length > 0 &&
+        queue.find((queueSong) => queueSong.url == result.url)
+          ? "default"
+          : "ghost"
+      }
       className="group w-full h-16 justify-between"
       onClick={addSong}
     >
@@ -73,7 +84,7 @@ export const SongOrPlaylist = ({ result, isSong }: SongOrPlaylistProps) => {
   );
 };
 
-export const Search = () => {
+export const Search = ({ queue }: { queue: Song[] }) => {
   const [singleResults, setSingleResults] = useState<YouTubeVideo[]>([]);
   const [playlistResults, setPlaylistResults] = useState<YouTubePlayList[]>([]);
   const [search, setSearch] = useState("");
@@ -117,9 +128,16 @@ export const Search = () => {
             {singleResults.length ? (
               <>
                 <div className="sticky top-[-0.1rem] w-full h-4 bg-gradient-to-b from-background to-transparent pointer-events-none" />
-                {singleResults.map((result) => (
-                  <SongOrPlaylist key={result.id} result={result} isSong />
-                ))}
+                <div className="flex flex-col gap-2">
+                  {singleResults.map((result) => (
+                    <SongOrPlaylist
+                      key={result.id}
+                      result={result}
+                      queue={queue}
+                      isSong
+                    />
+                  ))}
+                </div>
                 <div className="sticky bottom-0 w-full h-4 bg-gradient-to-t from-background to-transparent pointer-events-none" />
               </>
             ) : (
@@ -135,7 +153,11 @@ export const Search = () => {
               <>
                 <div className="sticky top-[-0.1rem] w-full h-4 bg-gradient-to-b from-background to-transparent pointer-events-none" />
                 {playlistResults.map((result) => (
-                  <SongOrPlaylist key={result.id} result={result} />
+                  <SongOrPlaylist
+                    key={result.id}
+                    result={result}
+                    queue={queue}
+                  />
                 ))}
                 <div className="sticky bottom-0 w-full h-4 bg-gradient-to-t from-background to-transparent pointer-events-none" />
               </>

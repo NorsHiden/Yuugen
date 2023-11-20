@@ -90,16 +90,9 @@ export class MusicController {
     @Req() req,
     @Query('guild_id') guild_id: string,
     @Query('url') url: string,
-    @Query('platform') platform: string,
     @Query('type') type: string,
   ) {
-    return await this.musicService.addSong(
-      req.user.id,
-      guild_id,
-      url,
-      platform,
-      type,
-    );
+    return await this.musicService.addSong(req.user.id, guild_id, url, type);
   }
 
   @Delete('song')

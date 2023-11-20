@@ -10,7 +10,6 @@ export interface IMusicService {
     user_id: string,
     guild_id: string,
     url: string,
-    platform: string,
     type: string,
   ): Promise<Song>;
   getRequester(

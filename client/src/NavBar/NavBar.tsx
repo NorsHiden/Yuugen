@@ -5,8 +5,9 @@ import { PlusCircledIcon } from "@radix-ui/react-icons";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { Search } from "./components/Search";
+import { Song } from "@/lib/types/MusicUpdate";
 
-export const NavBar = () => {
+export const NavBar = ({ queue }: { queue: Song[] }) => {
   const { isError, isLoading } = useQuery({
     queryKey: ["getMe"],
     queryFn: async () => axios.get("/api/users/me"),
@@ -28,7 +29,7 @@ export const NavBar = () => {
               Add music
             </Button>
           </DialogTrigger>
-          <Search />
+          <Search queue={queue} />
         </Dialog>
         <UserNav />
       </div>

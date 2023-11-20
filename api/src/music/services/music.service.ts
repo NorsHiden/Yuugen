@@ -152,46 +152,29 @@ export class MusicService {
     user_id: string,
     guild_id: string,
     url: string,
-    platform: string,
     type: string,
   ): Promise<Song> {
     const guildMusic = this.guildsMusic.get(guild_id);
     if (!guildMusic) throw new NotFoundException('Guild music not found');
-    if (platform === 'youtube' && type !== 'video' && type !== 'playlist')
+    if (type !== 'video' && type !== 'playlist')
       throw new ForbiddenException('Type must be video or playlist');
-    if (
-      platform !== 'youtube' &&
-      type !== 'track' &&
-      type !== 'playlist' &&
-      type !== 'album'
-    )
-      throw new ForbiddenException('Type must be track or playlist');
     const [result] = (await player.search(url, {
-      source:
-        platform === 'youtube'
-          ? {
-              youtube: type as 'playlist' | 'video',
-            }
-          : {
-              spotify: type as 'track' | 'playlist' | 'album',
-            },
+      source: {
+        youtube: type as 'playlist' | 'video',
+      },
     })) as any;
     if (!result) throw new NotFoundException('Song not found');
-    if (type == 'playlist') {
-      result.map((single) => guildMusic.queue.push(single));
-    } else {
-      const song: Song = {
-        title: result.title,
-        author: result.channel.name,
-        url: result.url,
-        duration: result.durationInSec,
-        thumbnail: result.thumbnails[0].url,
-        timestamp_added: new Date(),
-        requester: this.getRequester(user_id, guild_id),
-      };
-      guildMusic.queue.push(song);
-      return song;
-    }
+    const song: Song = {
+      title: result.title,
+      author: result.channel.name,
+      url: result.url,
+      duration: result.durationInSec,
+      thumbnail: result.thumbnails[0].url,
+      timestamp_added: new Date(),
+      requester: this.getRequester(user_id, guild_id),
+    };
+    guildMusic.queue.push(song);
+    return song;
   }
 
   async removeSong(guild_id: string, index: number) {

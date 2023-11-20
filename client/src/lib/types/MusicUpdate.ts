@@ -1,11 +1,4 @@
-import {
-  Collection,
-  GuildBasedChannel,
-  GuildMember,
-  ThreadMemberManager,
-  User,
-  UserFlagsBitField,
-} from "discord.js";
+import { Collection, GuildBasedChannel } from "discord.js";
 
 export type Song = {
   title: string;
